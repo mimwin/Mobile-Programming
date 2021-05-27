@@ -1,11 +1,11 @@
-package com.ykky.myappexample
+package com.ykky.greenapp
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
-import com.ykky.myappexample.databinding.ActivityMainBinding
+import com.ykky.greenapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
 
-                //탈퇴
+                //탈퇴 + 데이터베이스에서도 삭제
                 //firebaseauth.currentUser?.delete()
             }
 

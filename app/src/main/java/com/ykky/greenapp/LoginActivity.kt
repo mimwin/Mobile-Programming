@@ -1,4 +1,4 @@
-package com.ykky.myappexample
+package com.ykky.greenapp
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.ykky.myappexample.databinding.ActivityLoginBinding
+import com.ykky.greenapp.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
 
@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
                     task->
                     if(task.isSuccessful){
                         //로그인 성공
-                        Toast.makeText(this@LoginActivity,"로그인 실패",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LoginActivity,"로그인 성공",Toast.LENGTH_SHORT).show()
                         val intent = Intent(this@LoginActivity,MainActivity::class.java)
                         startActivity(intent)
                         finish()

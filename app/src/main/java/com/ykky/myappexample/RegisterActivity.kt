@@ -34,7 +34,7 @@ class RegisterActivity : AppCompatActivity() {
             btnRegister.setOnClickListener {
                 //파이어베이스 인증 시작
 
-                val email = etEmail2.text.toString()
+                val email = etEmail.text.toString()
                 val pw = etPwd.text.toString()
 
                 Log.e("REGISTER","$email   $pw")

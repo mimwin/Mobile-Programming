@@ -9,14 +9,15 @@
 
 
     <EditText
-        android:id="@+id/et_email2"
+        android:id="@+id/et_email"
         android:layout_width="235dp"
         android:layout_height="53dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="164dp"
         android:ems="10"
         android:hint="이메일을 입력하세요."
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.471"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,13 +25,15 @@
         android:id="@+id/et_pwd"
         android:layout_width="235dp"
         android:layout_height="53dp"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="40dp"
         android:ems="10"
         android:hint="비밀번호를 입력하세요."
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.471"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_email2" />
+        app:layout_constraintTop_toBottomOf="@+id/et_email" />
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -38,20 +41,20 @@
         android:layout_marginTop="4dp"
         android:text="7자 이상 입력해주세요."
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.328"
+        app:layout_constraintHorizontal_bias="0.321"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_pwd" />
+
 
     <EditText
         android:id="@+id/et_pwd_again"
         android:layout_width="235dp"
         android:layout_height="53dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="50dp"
         android:ems="10"
         android:hint="비밀번호 확인"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.534"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_pwd" />
 
@@ -61,7 +64,7 @@
         android:layout_marginTop="4dp"
         android:text="비밀번호를 다시 한번 입력해주세요."
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.46"
+        app:layout_constraintHorizontal_bias="0.441"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_pwd_again" />
 
@@ -69,13 +72,13 @@
         android:id="@+id/nickname"
         android:layout_width="235dp"
         android:layout_height="53dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="50dp"
         android:ems="10"
         android:hint="닉네임을 입력하세요."
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.528"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_pwd_again" />
+
 
     <Button
         android:id="@+id/btn_register"

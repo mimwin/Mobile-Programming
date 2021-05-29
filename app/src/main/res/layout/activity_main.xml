@@ -19,8 +19,8 @@
         android:layout_height="wrap_content"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/menu"
-        app:itemIconTint="@drawable/menu_selector"
-        app:itemTextColor="@drawable/menu_selector">
+        app:itemIconTint="@color/btn1"
+        app:itemTextColor="@color/btn1">
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 

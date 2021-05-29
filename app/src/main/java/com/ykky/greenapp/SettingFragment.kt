@@ -31,27 +31,21 @@ class SettingFragment : Fragment() {
             //imagview clicklistener
             backimg1.setOnClickListener {
                 (activity as MainActivity).backimgname=items[0]
-                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
             }
             backimg2.setOnClickListener {
                 (activity as MainActivity).backimgname=items[1]
-                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
             }
             backimg3.setOnClickListener {
                 (activity as MainActivity).backimgname=items[2]
-                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
             }
             backimg4.setOnClickListener {
                 (activity as MainActivity).backimgname=items[3]
-                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
             }
             backimg5.setOnClickListener {
                 (activity as MainActivity).backimgname=items[4]
-                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
             }
             backimg6.setOnClickListener {
                 (activity as MainActivity).backimgname=items[5]
-                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
             }
 
             mypagedown.setOnClickListener {

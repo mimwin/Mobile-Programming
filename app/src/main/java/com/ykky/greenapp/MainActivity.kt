@@ -2,6 +2,7 @@ package com.ykky.greenapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -32,23 +33,33 @@ class MainActivity : AppCompatActivity() {
             when(it.itemId){
                 R.id.navgreen ->{
                     replaceFragment(GreenFragment(),"navgreen")
+                    nav.itemIconTintList=ContextCompat.getColorStateList(this,R.color.btn1)
+                    nav.itemTextColor=ContextCompat.getColorStateList(this,R.color.btn1)
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navtodo->{
                     replaceFragment(TODOFragment(),"navtodo")
+                    nav.itemIconTintList=ContextCompat.getColorStateList(this,R.color.btn2)
+                    nav.itemTextColor=ContextCompat.getColorStateList(this,R.color.btn2)
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navrank ->{
                     replaceFragment(RankFragment(),"navrank")
+                    nav.itemIconTintList=ContextCompat.getColorStateList(this,R.color.btn3)
+                    nav.itemTextColor=ContextCompat.getColorStateList(this,R.color.btn3)
                     return@setOnNavigationItemSelectedListener true
                 }
 
                 R.id.navsetting ->{
                     replaceFragment(SettingFragment(),"navsetting")
+                    nav.itemIconTintList=ContextCompat.getColorStateList(this,R.color.btn4)
+                    nav.itemTextColor=ContextCompat.getColorStateList(this,R.color.btn4)
                     return@setOnNavigationItemSelectedListener true
                 }
                 else ->{
                     replaceFragment(GreenFragment(),"navgreen")
+                    nav.itemIconTintList=ContextCompat.getColorStateList(this,R.color.btn1)
+                    nav.itemTextColor=ContextCompat.getColorStateList(this,R.color.btn1)
                     return@setOnNavigationItemSelectedListener true
                 }
             }

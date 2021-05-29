@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navgreen"
+        android:icon="@drawable/plant"
+        android:title="새싹" />
+
+    <item
+        android:id="@+id/navtodo"
+        android:icon="@drawable/todolist"
+        android:title="TODO"/>
+    <item
+        android:id="@+id/navrank"
+        android:icon="@drawable/trophy"
+        android:title="Rank"/>
+    <item
+        android:id="@+id/navsetting"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="Setting"/>
+
+
+</menu>

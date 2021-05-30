@@ -58,6 +58,7 @@ class SettingFragment : Fragment() {
                 }
             }
             changebackgrounddown.setOnClickListener {
+                re2 = view.findViewById(R.id.changeback)
                 if(re2.visibility==View.VISIBLE){
                     re2.visibility=View.GONE
                 }
@@ -76,7 +77,6 @@ class SettingFragment : Fragment() {
             }
 
         }
-
     }
 
     override fun onDestroy() {

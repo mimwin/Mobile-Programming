@@ -52,9 +52,17 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
         </androidx.recyclerview.widget.RecyclerView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="오늘의 달성률 : 100%"
+            android:layout_marginStart="10dp"
+            android:textSize="30dp"/>
 
     </LinearLayout>
 

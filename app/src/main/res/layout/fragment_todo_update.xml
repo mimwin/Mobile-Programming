@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="350dp"
             android:layout_margin="15dp"
-            android:background="@color/yellow"
+            android:background="@color/white"
             android:ems="10"
             android:gravity="start|top"
             android:hint="메모 할 내용을 입력하세요."

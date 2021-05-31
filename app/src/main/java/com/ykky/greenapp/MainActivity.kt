@@ -5,15 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 import com.ykky.greenapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityMainBinding
-    lateinit var firebaseauth : FirebaseAuth    // 파이어베이스 인증객체
-    lateinit var databaseref : DatabaseReference    // 실시간 데이터베이스
     lateinit var nav:BottomNavigationView
     var backimgname="image1"
 
@@ -26,7 +22,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun init() {
 
-        firebaseauth = FirebaseAuth.getInstance()
         replaceFragment(GreenFragment(),"navgreen")
         nav=findViewById<BottomNavigationView>(R.id.navigationbar)
         nav.setOnNavigationItemSelectedListener {
@@ -38,7 +33,8 @@ class MainActivity : AppCompatActivity() {
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navtodo->{
-                    replaceFragment(TODOFragment(),"navtodo")
+                    //TodoAddFragment() --> TodoFragment()로 바꿔주면 됩니다!
+                    replaceFragment(TodoAddFragment(),"navtodo")
                     nav.itemIconTintList=ContextCompat.getColorStateList(this,R.color.btn2)
                     nav.itemTextColor=ContextCompat.getColorStateList(this,R.color.btn2)
                     return@setOnNavigationItemSelectedListener true

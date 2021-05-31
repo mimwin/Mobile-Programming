@@ -16,6 +16,7 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var databaseref : DatabaseReference    // 실시간 데이터베이스
     lateinit var binding : ActivityRegisterBinding
     lateinit  var useraccount : UserAccount
+    val todo = ArrayList<TodoData>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,8 +39,10 @@ class RegisterActivity : AppCompatActivity() {
                 val pw = etPwd.text.toString()
                 val nickname = nickname.text.toString()
                 val repw = etPwdAgain.text.toString()
+                todo.add(TodoData("hi","hi","hi",false))
 
-                Log.e("HI","$pw  $repw $email")
+                Log.e("todo","$todo")
+
                 //비밀번호 == 비밀번호확인 인 경우
                 if(pw == repw){
 
@@ -49,7 +52,7 @@ class RegisterActivity : AppCompatActivity() {
                         if(task.isSuccessful){
                             val firebaseUser : FirebaseUser? = firebaseauth.currentUser
                             // email, pw, token, nickname
-                            useraccount = UserAccount(firebaseUser?.email.toString(),pw,firebaseUser?.uid.toString(),nickname)
+                            useraccount = UserAccount(firebaseUser?.email.toString(),pw,firebaseUser?.uid.toString(),nickname,todo)
 
                             //setvalue = insert
                             databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).setValue(useraccount)
@@ -60,7 +63,9 @@ class RegisterActivity : AppCompatActivity() {
 
                         }
                         else{
-                            Toast.makeText(this@RegisterActivity,"회원가입 실패",Toast.LENGTH_SHORT).show()
+                            Log.e("ERROR", task.exception?.message.toString())
+                            Toast.makeText(this@RegisterActivity,task.exception?.message.toString(),Toast.LENGTH_SHORT).show()
+                            todo.clear()
                         }
                     }
                 }

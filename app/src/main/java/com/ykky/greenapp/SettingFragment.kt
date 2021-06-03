@@ -1,20 +1,35 @@
 package com.ykky.greenapp
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.ykky.greenapp.databinding.FragmentSettingBinding
+import com.ykky.greenapp.databinding.MypageditBinding
 
 class SettingFragment : Fragment() {
 
-    val items= arrayOf("image1","image2","image3","image4","image5","image6")
     lateinit var re1:LinearLayout
     lateinit var re2:GridLayout
     lateinit var re3:LinearLayout
+    lateinit var firebaseauth : FirebaseAuth
+    lateinit var databaseref : DatabaseReference
+    var firebaseUser:FirebaseUser?=null
     var binding:FragmentSettingBinding?=null
+
+    var emailId=""
+    var password=""
+    var nickname=""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -27,29 +42,121 @@ class SettingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initMyPage()
+        init()
+
+
+    }
+
+    private fun initMyPage() {
+        firebaseauth= FirebaseAuth.getInstance()
+        databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")
+
+        firebaseUser = firebaseauth.currentUser
+
+        databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).get().addOnSuccessListener {
+                emailId=it.child("emailId").value.toString()
+                password=it.child("password").value.toString()
+                nickname=it.child("nickname").value.toString()
+
+                binding?.apply {
+                    myid.text="아이디 : "+emailId
+                    mypassword.text="비밀번호 : "+password
+                    mynickname.text="닉네임 : "+nickname
+                }
+        }
+
+
+        binding!!.apply{
+            mypageeidt.setOnClickListener {
+                var data=arrayOf(emailId,password,nickname)
+                data=AlertEdit(data)
+                mypassword.text="비밀번호 : "+data[1]
+                mynickname.text="닉네임 : "+data[2]
+            }
+            mypagedelete.setOnClickListener {
+                AlertDelete()
+            }
+        }
+    }
+
+    private fun AlertEdit(data:Array<String>) :Array<String> {
+        val dlgBinding= MypageditBinding.inflate(layoutInflater)
+        dlgBinding.id.text=data[0]
+        dlgBinding.editpassword.setText(data[1])
+        dlgBinding.editnickaname.setText(data[2])
+
+
+        val builder= AlertDialog.Builder(requireContext())
+        builder.setView(dlgBinding.root)
+            .setTitle("마이 페이지 수정하기")
+            .setPositiveButton("네"){
+                    _,_ ->
+                val newpassword=dlgBinding.editpassword.text.toString()
+                data[1]=newpassword
+                val newnickname=dlgBinding.editnickaname.text.toString()
+                data[2]=newnickname
+                databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).child("password").setValue(newpassword)
+                databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).child("nickname").setValue(newnickname)
+                Toast.makeText(requireContext(),"마이 페이지 수정 완료",Toast.LENGTH_SHORT).show()
+
+            }
+            .setNegativeButton("아니오"){
+                    _,_ ->
+            }
+        val dlg=builder.create()
+        dlg.show()
+        return data
+    }
+
+    private fun AlertDelete() {
+        val builder= AlertDialog.Builder(requireContext())
+        builder.setMessage("해당 계정을 삭제하시겠습니까? \n 계정 삭제시 모든 TODO가 사라집니다.")
+            .setPositiveButton("네"){
+                    _,_ ->
+                databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).removeValue()
+                Toast.makeText(requireContext(),"계정 삭제 완료",Toast.LENGTH_SHORT).show()
+                val intent= Intent(requireActivity(),LoginActivity::class.java)
+                startActivity(intent)
+                requireActivity().finish()
+            }
+            .setNegativeButton("아니오"){
+                    _,_ ->
+            }
+        val dlg=builder.create()
+        dlg.show()
+    }
+
+    private fun init() {
         binding!!.apply{
             //imagview clicklistener
             backimg1.setOnClickListener {
-                (activity as MainActivity).backimgname=items[0]
+                (activity as MainActivity).setBackImg(0)
+                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
             }
             backimg2.setOnClickListener {
-                (activity as MainActivity).backimgname=items[1]
+                (activity as MainActivity).setBackImg(1)
+                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
             }
             backimg3.setOnClickListener {
-                (activity as MainActivity).backimgname=items[2]
+                (activity as MainActivity).setBackImg(2)
+                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
             }
             backimg4.setOnClickListener {
-                (activity as MainActivity).backimgname=items[3]
+                (activity as MainActivity).setBackImg(3)
+                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
             }
             backimg5.setOnClickListener {
-                (activity as MainActivity).backimgname=items[4]
+                (activity as MainActivity).setBackImg(4)
+                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
             }
             backimg6.setOnClickListener {
-                (activity as MainActivity).backimgname=items[5]
+                (activity as MainActivity).setBackImg(5)
+                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
             }
 
             mypagedown.setOnClickListener {
-                re1=view.findViewById<LinearLayout>(R.id.maypagedata)
+                re1=binding!!.maypagedata
                 if(re1.visibility==View.VISIBLE){
                     re1.visibility=View.GONE
                 }
@@ -58,7 +165,7 @@ class SettingFragment : Fragment() {
                 }
             }
             changebackgrounddown.setOnClickListener {
-                re2 = view.findViewById(R.id.changeback)
+                re2 = binding!!.changeback
                 if(re2.visibility==View.VISIBLE){
                     re2.visibility=View.GONE
                 }
@@ -67,7 +174,7 @@ class SettingFragment : Fragment() {
                 }
             }
             devinfodown.setOnClickListener {
-                re3=view.findViewById<LinearLayout>(R.id.devinfodata)
+                re3=binding!!.devinfodata
                 if(re3.visibility==View.VISIBLE){
                     re3.visibility=View.GONE
                 }

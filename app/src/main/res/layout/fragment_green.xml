@@ -7,54 +7,265 @@
     tools:context=".GreenFragment">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/backimg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/field"
         android:scaleType="centerCrop"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <ImageView
-            android:layout_width="500dp"
-            android:layout_height="600dp"
-            android:layout_marginTop="224dp"
-            android:layout_marginEnd="44dp"
+            android:id="@+id/flower1"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
             android:src="@drawable/flower1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="110dp"/>
 
         <ImageView
-            android:layout_width="500dp"
-            android:layout_height="600dp"
-            android:layout_marginTop="208dp"
-            android:layout_marginEnd="4dp"
-            android:src="@drawable/flower3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/flower2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/flower1"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="110dp"/>
 
         <ImageView
-            android:layout_width="500dp"
-            android:layout_height="600dp"
-            android:layout_marginStart="64dp"
-            android:layout_marginTop="200dp"
+            android:id="@+id/flower3"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
             android:src="@drawable/flower2"
-            app:layout_constraintStart_toStartOf="@+id/imageView2"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginLeft="150dp"
+            android:layout_marginTop="110dp"/>
 
         <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="500dp"
-            android:layout_height="600dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="216dp"
+            android:id="@+id/flower4"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
             android:src="@drawable/flower4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginLeft="220dp"
+            android:layout_marginTop="110dp"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/flower5"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/flower3"
+            android:layout_marginLeft="290dp"
+            android:layout_marginTop="110dp"/>
 
+        <ImageView
+            android:id="@+id/flower6"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/flower3"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="210dp"/>
+
+        <ImageView
+            android:id="@+id/flower7"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/flower2"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="210dp"/>
+
+        <ImageView
+            android:id="@+id/flower8"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/flower1"
+            android:layout_marginLeft="150dp"
+            android:layout_marginTop="210dp"/>
+
+        <ImageView
+            android:id="@+id/flower9"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/flower3"
+            android:layout_marginLeft="220dp"
+            android:layout_marginTop="210dp"/>
+
+        <ImageView
+            android:id="@+id/flower10"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/flower1"
+            android:layout_marginLeft="290dp"
+            android:layout_marginTop="210dp"/>
+
+        <ImageView
+            android:id="@+id/flower11"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/flower2"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="310dp"/>
+
+        <ImageView
+            android:id="@+id/flower12"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/flower4"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="310dp"/>
+
+        <ImageView
+            android:id="@+id/flower13"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/flower3"
+            android:layout_marginLeft="150dp"
+            android:layout_marginTop="310dp"/>
+
+        <ImageView
+            android:id="@+id/flower14"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/flower2"
+            android:layout_marginLeft="220dp"
+            android:layout_marginTop="310dp"/>
+
+        <ImageView
+            android:id="@+id/flower15"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/flower4"
+            android:layout_marginLeft="290dp"
+            android:layout_marginTop="310dp"/>
+
+        <ImageView
+            android:id="@+id/flower16"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="410dp"/>
+
+        <ImageView
+            android:id="@+id/flower17"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower4"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="410dp"/>
+
+        <ImageView
+            android:id="@+id/flower18"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower2"
+            android:layout_marginLeft="150dp"
+            android:layout_marginTop="410dp"/>
+
+        <ImageView
+            android:id="@+id/flower19"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower3"
+            android:layout_marginLeft="220dp"
+            android:layout_marginTop="410dp"/>
+
+        <ImageView
+            android:id="@+id/flower20"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower3"
+            android:layout_marginLeft="290dp"
+            android:layout_marginTop="410dp"/>
+
+        <ImageView
+            android:id="@+id/flower21"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="510dp"/>
+
+        <ImageView
+            android:id="@+id/flower22"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower2"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="510dp"/>
+
+        <ImageView
+            android:id="@+id/flower23"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower4"
+            android:layout_marginLeft="150dp"
+            android:layout_marginTop="510dp"/>
+
+        <ImageView
+            android:id="@+id/flower24"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower3"
+            android:layout_marginLeft="220dp"
+            android:layout_marginTop="510dp"/>
+
+        <ImageView
+            android:id="@+id/flower25"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower2"
+            android:layout_marginLeft="290dp"
+            android:layout_marginTop="510dp"/>
+
+        <ImageView
+            android:id="@+id/flower26"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower4"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="610dp"/>
+
+        <ImageView
+            android:id="@+id/flower27"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower2"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="610dp"/>
+
+        <ImageView
+            android:id="@+id/flower28"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower4"
+            android:layout_marginLeft="150dp"
+            android:layout_marginTop="610dp"/>
+
+        <ImageView
+            android:id="@+id/flower29"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower1"
+            android:layout_marginLeft="220dp"
+            android:layout_marginTop="610dp"/>
+
+        <ImageView
+            android:id="@+id/flower30"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/flower4"
+            android:layout_marginLeft="290dp"
+            android:layout_marginTop="610dp"/>
 
 </FrameLayout>

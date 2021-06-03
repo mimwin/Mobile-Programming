@@ -11,13 +11,22 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityMainBinding
     lateinit var nav:BottomNavigationView
-    var backimgname="image1"
+    var backimgArray=arrayOf(R.drawable.field,R.drawable.ex,R.drawable.field,R.drawable.ex,R.drawable.field,R.drawable.ex)
+    var backimgindex=0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+    }
+
+    fun getBackImg():Int{
+        return backimgArray[backimgindex]
+    }
+
+    fun setBackImg(i:Int){
+        backimgindex=i
     }
 
     private fun init() {
@@ -69,6 +78,16 @@ class MainActivity : AppCompatActivity() {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment, fragment,tag)
         fragmentTransaction.commit()
+    }
+
+    fun changeBack(){
+        val greentag=supportFragmentManager.findFragmentByTag("navgreen")
+        if(greentag!=null&&greentag.isVisible){ //배경을 바꿔 새싹화면으로 넘어왔다면
+            //네비게이션 바도 새싹으로 바꿔준다
+            nav.getMenu().findItem(R.id.navgreen).isChecked=true
+            nav.itemIconTintList=ContextCompat.getColorStateList(this,R.color.btn1)
+            nav.itemTextColor=ContextCompat.getColorStateList(this,R.color.btn1)
+        }
     }
 
 }

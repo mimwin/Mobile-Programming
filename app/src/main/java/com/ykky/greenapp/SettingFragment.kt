@@ -69,10 +69,8 @@ class SettingFragment : Fragment() {
 
         binding!!.apply{
             mypageeidt.setOnClickListener {
-                var data=arrayOf(emailId,password,nickname)
-                data=AlertEdit(data)
-                mypassword.text="비밀번호 : "+data[1]
-                mynickname.text="닉네임 : "+data[2]
+                val data=arrayOf(emailId,password,nickname)
+                AlertEdit(data)
             }
             mypagedelete.setOnClickListener {
                 AlertDelete()
@@ -80,7 +78,8 @@ class SettingFragment : Fragment() {
         }
     }
 
-    private fun AlertEdit(data:Array<String>) :Array<String> {
+    //데이터 수정 알림창
+    private fun AlertEdit(data:Array<String>) {
         val dlgBinding= MypageditBinding.inflate(layoutInflater)
         dlgBinding.id.text=data[0]
         dlgBinding.editpassword.setText(data[1])
@@ -96,9 +95,17 @@ class SettingFragment : Fragment() {
                 data[1]=newpassword
                 val newnickname=dlgBinding.editnickaname.text.toString()
                 data[2]=newnickname
+                //데이터베이스에 저장
                 databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).child("password").setValue(newpassword)
                 databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).child("nickname").setValue(newnickname)
+
                 Toast.makeText(requireContext(),"마이 페이지 수정 완료",Toast.LENGTH_SHORT).show()
+
+                //마이 페이지에 변경된 부분 반영
+                binding!!.mypassword.text="비밀번호 : "+data[1]
+                password=data[1]
+                binding!!.mynickname.text="닉네임 : "+data[2]
+                nickname=data[2]
 
             }
             .setNegativeButton("아니오"){
@@ -106,16 +113,21 @@ class SettingFragment : Fragment() {
             }
         val dlg=builder.create()
         dlg.show()
-        return data
     }
 
+    //계정 삭제 알림창
     private fun AlertDelete() {
         val builder= AlertDialog.Builder(requireContext())
-        builder.setMessage("해당 계정을 삭제하시겠습니까? \n 계정 삭제시 모든 TODO가 사라집니다.")
+        builder.setMessage("해당 계정을 삭제하시겠습니까? \n계정 삭제시 모든 TODO가 사라집니다.")
             .setPositiveButton("네"){
                     _,_ ->
+                //데이터베이스에서 삭제하기
                 databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).removeValue()
+
+
                 Toast.makeText(requireContext(),"계정 삭제 완료",Toast.LENGTH_SHORT).show()
+
+                //로그인 화면으로 돌아가기
                 val intent= Intent(requireActivity(),LoginActivity::class.java)
                 startActivity(intent)
                 requireActivity().finish()

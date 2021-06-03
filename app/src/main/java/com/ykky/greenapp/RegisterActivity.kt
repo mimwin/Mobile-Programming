@@ -9,6 +9,9 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.ykky.greenapp.databinding.ActivityRegisterBinding
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -50,6 +53,7 @@ class RegisterActivity : AppCompatActivity() {
                     firebaseauth.createUserWithEmailAndPassword(email,pw).addOnCompleteListener {
                         task->
                         if(task.isSuccessful){
+                            val getTime : String = getdate()
                             val firebaseUser : FirebaseUser? = firebaseauth.currentUser
                             // email, pw, registerdate, nickname
                             useraccount = UserAccount(firebaseUser?.email.toString(),pw,getTime,nickname,todo)
@@ -81,5 +85,13 @@ class RegisterActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    private fun getdate() : String{
+        val now : Long = System.currentTimeMillis()
+        val mdate : Date = Date(now)
+        val simpelDate : SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val getTime : String = simpelDate.format(mdate)
+        return getTime
     }
 }

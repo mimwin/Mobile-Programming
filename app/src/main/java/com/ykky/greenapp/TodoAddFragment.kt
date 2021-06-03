@@ -43,33 +43,20 @@ class TodoAddFragment : Fragment() {
 
         finish.setOnClickListener {
 
+            val firebaseUser : FirebaseUser? = firebaseauth.currentUser
+
             val todotext = todoEditText.text.toString()
             val memo = memo.text.toString()
-
-            val firebaseUser : FirebaseUser? = firebaseauth.currentUser
             var todoarr : ArrayList<TodoData>
 
-           //기존 투두 가져오기
+            todoData = TodoData("2021-05-31",todotext,memo,false)
+
             databaseref.child("UserAccount")
                     .child(firebaseUser?.uid.toString())
                     .child("todo")
-                    .get().addOnSuccessListener {
-
-                        todoarr = it.value as ArrayList<TodoData>
-
-                        //투두 내용 추가
-                        todoData = TodoData("2021-05-31",todotext,memo,false)
-                        todoarr.add(todoData)
-
-                        //추가한 내용 업데이트
-                        databaseref.child("UserAccount")
-                                .child(firebaseUser?.uid.toString())
-                                .child("todo")
-                                .setValue(todoarr)
-
-                    }.addOnFailureListener {
-                        Toast.makeText(context,"TODO 정보를 불러오는데 실패하였습니다.",Toast.LENGTH_SHORT).show()
-                    }
+                    .child(todoData.date)
+                    .child(todoData.todo)
+                    .setValue(todoData)
 
 
             Toast.makeText(context,"추가 완료",Toast.LENGTH_SHORT).show()

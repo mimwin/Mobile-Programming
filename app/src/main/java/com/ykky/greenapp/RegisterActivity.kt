@@ -51,8 +51,8 @@ class RegisterActivity : AppCompatActivity() {
                         task->
                         if(task.isSuccessful){
                             val firebaseUser : FirebaseUser? = firebaseauth.currentUser
-                            // email, pw, token, nickname
-                            useraccount = UserAccount(firebaseUser?.email.toString(),pw,nickname,todo,firebaseUser?.uid.toString())
+                            // email, pw, registerdate, nickname
+                            useraccount = UserAccount(firebaseUser?.email.toString(),pw,getTime,nickname,todo)
 
                             //setvalue = insert
                             databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).setValue(useraccount)

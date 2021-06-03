@@ -9,6 +9,9 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.ykky.greenapp.databinding.ActivityRegisterBinding
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -41,8 +44,6 @@ class RegisterActivity : AppCompatActivity() {
                 val repw = etPwdAgain.text.toString()
                 todo.add(TodoData("hi","hi","hi",false))
 
-                Log.e("todo","$todo")
-
                 //비밀번호 == 비밀번호확인 인 경우
                 if(pw == repw){
 
@@ -50,9 +51,11 @@ class RegisterActivity : AppCompatActivity() {
                     firebaseauth.createUserWithEmailAndPassword(email,pw).addOnCompleteListener {
                         task->
                         if(task.isSuccessful){
+
+                            val getTime : String = getdate()
                             val firebaseUser : FirebaseUser? = firebaseauth.currentUser
-                            // email, pw, token, nickname
-                            useraccount = UserAccount(firebaseUser?.email.toString(),pw,firebaseUser?.uid.toString(),nickname,todo)
+                            // email, pw, registerdate, nickname
+                            useraccount = UserAccount(firebaseUser?.email.toString(),pw,getTime,nickname,todo)
 
                             //setvalue = insert
                             databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).setValue(useraccount)
@@ -81,5 +84,13 @@ class RegisterActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    private fun getdate() : String{
+        val now : Long = System.currentTimeMillis()
+        val mdate : Date = Date(now)
+        val simpelDate : SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val getTime : String = simpelDate.format(mdate)
+        return getTime
     }
 }

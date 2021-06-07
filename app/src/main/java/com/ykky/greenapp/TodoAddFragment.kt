@@ -1,6 +1,7 @@
 package com.ykky.greenapp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,8 @@ class TodoAddFragment : Fragment() {
     lateinit var finish : Button
     lateinit var todoEditText : EditText
     lateinit var memo : EditText
+    lateinit var firebaseUser : FirebaseUser
+    var count = 0L
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,31 +42,161 @@ class TodoAddFragment : Fragment() {
     private fun init() {
         firebaseauth = FirebaseAuth.getInstance()
         databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")
+        firebaseUser = firebaseauth.currentUser!!
 
+        val date = "2021-05-31"
+
+        //투두 개수 가져오기
+        count = getCount(date)
 
         finish.setOnClickListener {
-
-            val firebaseUser : FirebaseUser? = firebaseauth.currentUser
-
+            
             val todotext = todoEditText.text.toString()
             val memo = memo.text.toString()
-            var todoarr : ArrayList<TodoData>
 
-            todoData = TodoData("2021-05-31",todotext,memo,false)
+            todoData = TodoData("2021-05-31", todotext, memo, false)
 
+            // 투두 추가
             databaseref.child("UserAccount")
-                    .child(firebaseUser?.uid.toString())
+                    .child(firebaseUser.uid.toString())
                     .child("todo")
-                    .child(todoData.date)
-                    .child(todoData.todo)
+//                    .child(todoData.date)
+                    .child((count+1L).toString())
                     .setValue(todoData)
 
+            // 개수 증가 (전체)
+            IncreaseCount()
+            Toast.makeText(context, "추가 완료", Toast.LENGTH_SHORT).show()
 
-            Toast.makeText(context,"추가 완료",Toast.LENGTH_SHORT).show()
+            // 전체 개수 가져오기
+            count = getCount(date)
 
-            //todoFragment로 돌아가기
+            // 체크 true 했을 경우
+            checkTrue(date)
+            IncreaseTrue()
+
+            //오늘의 달성률 계산
+            TodayRate(date)
+            
+            //리더보드 갱신
+            Leaderboard()
         }
-
-
     }
+
+    fun Leaderboard() {
+        var allcount : Double = 0.0
+        var alltrue : Double = 0.0
+        databaseref.child("UserAccount").child(firebaseUser.uid).get().addOnSuccessListener {
+                    val emailId=it.child("emailId").value.toString()
+                    val password=it.child("password").value.toString()
+                    val registerDate = it.child("registerDate").value.toString()
+                    val nickname=it.child("nickname").value.toString()
+                    allcount = (it.child("allCount").value as Long).toDouble()
+                    alltrue = (it.child("trueCount").value as Long).toDouble()
+
+                    var useraccount = UserAccount(emailId,password,registerDate,firebaseUser.uid,nickname,ArrayList<TodoData>(),allcount,alltrue)
+
+                    val rate : Double = (alltrue / allcount)* 100
+
+            Log.e("LEADERBOARD-INSIDE","$useraccount  $allcount $alltrue $rate")
+
+                    val userleader = LeaderboardData(rate,useraccount)
+                    val leadercount = getLeaderCount()
+
+                    databaseref.child("Leaderboard")
+                            .child((leadercount+1L).toString())
+                            .setValue(userleader)
+
+                    databaseref.child("Leaderboard")
+                            .orderByChild("rate")
+                }
+    }
+
+    fun IncreaseCount(){
+        databaseref.child("UserAccount")
+                .child(firebaseUser.uid.toString()).get().addOnSuccessListener {
+            val count = it.child("allCount").value as Long
+            databaseref.child("UserAccount")
+                    .child(firebaseUser.uid.toString())
+                    .child("allCount")
+                    .setValue(count+1L)
+        }
+    }
+
+    fun IncreaseTrue(){
+        databaseref.child("UserAccount")
+                .child(firebaseUser.uid.toString()).get().addOnSuccessListener {
+                    val count = it.child("trueCount").value as Long
+
+                    Log.e("INCREASETRUE",count.toString())
+
+                    databaseref.child("UserAccount")
+                            .child(firebaseUser.uid.toString())
+                            .child("trueCount")
+                            .setValue(count + 1L)
+
+                }
+    }
+
+
+    fun getLeaderCount() : Long{
+        var count = 0L
+        databaseref.child("Leaderboard").get().addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val doc = it.result!!
+                        count = doc.childrenCount
+                    }
+                }
+        return count
+    }
+
+    // 해당 날짜에 해당하는 투두 개수 가져오기
+    fun getCount(date : String ): Long {
+        databaseref.child("UserAccount")
+                .child(firebaseUser.uid.toString())
+                .child("todo").get().addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val doc = it.result!!
+                        count = doc.child(date).childrenCount
+                    }
+                }
+        return count
+    }
+
+    fun TodayRate(date:String) {
+
+        val cnt = getCount(date)
+        var truecount : Double = 0.0
+        var rate : Double = 0.0
+
+        databaseref.child("UserAccount")
+                .child(firebaseUser.uid.toString())
+                .child("todo").get().addOnSuccessListener {
+
+                    val list = it.child(todoData.date)
+                    for(i in 1..count){
+                        if(list.child(i.toString()).child("checked").value == "true"){
+                            truecount++
+                        }
+                    }
+                    rate = ((truecount/(cnt)) * 100)
+                    Log.e("TODAY RATE - INSIDE","$cnt  $truecount  $rate")
+                }
+    }
+
+
+    fun checkTrue(date : String){
+
+        val count = getCount(date)
+
+        databaseref.child("UserAccount")
+                .child(firebaseUser.uid.toString())
+                .child("todo")
+                .child(date)
+                .child((count).toString())
+                .child("checked")
+                .setValue("true")
+    }
+
+
 }

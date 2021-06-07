@@ -20,6 +20,7 @@ class TodoAddFragment : Fragment() {
     lateinit var databaseref : DatabaseReference    // 실시간 데이터베이스
     lateinit var todoData : TodoData
     lateinit var finish : Button
+    lateinit var cancel : Button
     lateinit var todoEditText : EditText
     lateinit var memo : EditText
     lateinit var firebaseUser : FirebaseUser
@@ -32,6 +33,7 @@ class TodoAddFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_todo_add, container, false)
         finish = view.findViewById<Button>(R.id.finishBtn)
+        cancel = view.findViewById(R.id.cancelBtn)
         todoEditText = view.findViewById(R.id.todoEditText)
         memo = view.findViewById(R.id.memo)
 
@@ -50,23 +52,21 @@ class TodoAddFragment : Fragment() {
         count = getCount(date)
 
         finish.setOnClickListener {
-            
+
             val todotext = todoEditText.text.toString()
             val memo = memo.text.toString()
 
-            todoData = TodoData("2021-05-31", todotext, memo, false)
+            todoData = TodoData("2021-06-07",todotext,memo,false)
 
             // 투두 추가
             databaseref.child("UserAccount")
                     .child(firebaseUser.uid.toString())
                     .child("todo")
-//                    .child(todoData.date)
                     .child((count+1L).toString())
                     .setValue(todoData)
 
             // 개수 증가 (전체)
             IncreaseCount()
-            Toast.makeText(context, "추가 완료", Toast.LENGTH_SHORT).show()
 
             // 전체 개수 가져오기
             count = getCount(date)
@@ -77,9 +77,27 @@ class TodoAddFragment : Fragment() {
 
             //오늘의 달성률 계산
             TodayRate(date)
-            
+
             //리더보드 갱신
             Leaderboard()
+
+            Toast.makeText(context, "추가 완료", Toast.LENGTH_SHORT).show()
+
+            clearInput()
+            //todoFragment로 돌아가기
+            activity?.supportFragmentManager?.beginTransaction()
+                    ?.replace(R.id.fragment, TODOFragment())
+                    ?.addToBackStack(null)
+                    ?.commit()
+        }
+
+        cancel.setOnClickListener {
+            Toast.makeText(context,"추가 취소",Toast.LENGTH_SHORT).show()
+            clearInput()
+            activity?.supportFragmentManager?.beginTransaction()
+                    ?.replace(R.id.fragment, TODOFragment())
+                    ?.addToBackStack(null)
+                    ?.commit()
         }
     }
 
@@ -121,7 +139,9 @@ class TodoAddFragment : Fragment() {
                     .child("allCount")
                     .setValue(count+1L)
         }
+
     }
+
 
     fun IncreaseTrue(){
         databaseref.child("UserAccount")
@@ -198,5 +218,10 @@ class TodoAddFragment : Fragment() {
                 .setValue("true")
     }
 
-
+    fun clearInput(){
+        view.apply {
+            todoEditText.text.clear()
+            memo.text.clear()
+        }
+    }
 }

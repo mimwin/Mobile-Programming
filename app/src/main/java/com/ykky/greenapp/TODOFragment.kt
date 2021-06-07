@@ -3,30 +3,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.ykky.greenapp.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TODOFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TODOFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    lateinit var firebaseauth : FirebaseAuth    // 파이어베이스 인증객체
+    lateinit var databaseref : DatabaseReference    // 실시간 데이터베이스
+    lateinit var adapter: TodoAdapter
+    lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+
     }
 
     override fun onCreateView(
@@ -34,26 +35,67 @@ class TODOFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_t_o_d_o, container, false)
-    }
+        val view = inflater.inflate(R.layout.fragment_t_o_d_o, container, false)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+        val addBtn = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
+        val calendarBtn = view.findViewById<ImageButton>(R.id.calendarBtn)
+        var year = view.findViewById<TextView>(R.id.year)
+        var date = view.findViewById<TextView>(R.id.date)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TODOFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TODOFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        var now = LocalDate.now()
+        var yearnow = now.format(DateTimeFormatter.ofPattern("yyyy년"))
+        var datenow = now.format(DateTimeFormatter.ofPattern("MM월 dd일"))
+
+        year.text = yearnow.toString()
+        date.text = datenow.toString()
+
+        view.apply {
+
+            firebaseauth = FirebaseAuth.getInstance()
+            databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")
+            val firebaseUser : FirebaseUser? = firebaseauth.currentUser
+
+
+            //해당날짜 todo 가져와서 recyclerView에 출력
+            val query = databaseref.child("UserAccount")
+                    .child(firebaseUser?.uid.toString())
+                    .child("todo")
+                    .orderByChild("date")
+                    .equalTo("2021-06-07")
+
+            val option = FirebaseRecyclerOptions.Builder<TodoData>()
+                    .setQuery(query, TodoData::class.java)
+                    .build()
+            adapter = TodoAdapter(option)
+            adapter.itemClickListener = object :TodoAdapter.OnItemClickListener{
+                override fun onItemClick(view: View, position: Int) {
+                    //todo 클릭시 update 화면으로 이동
                 }
             }
+
+            recyclerView.adapter = adapter
+
+            adapter.startListening()
+            adapter.notifyDataSetChanged()
+
+            addBtn.setOnClickListener {
+                activity?.supportFragmentManager?.beginTransaction()
+                    ?.replace(R.id.fragment, TodoAddFragment())
+                    ?.addToBackStack(null)
+                    ?.commit()
+            }
+
+            calendarBtn.setOnClickListener {
+                activity?.supportFragmentManager?.beginTransaction()
+                    ?.replace(R.id.fragment, TodoCalendarFragment())
+                    ?.addToBackStack(null)
+                    ?.commit()
+            }
+        }
+
+        return view
     }
+
+
+
 }

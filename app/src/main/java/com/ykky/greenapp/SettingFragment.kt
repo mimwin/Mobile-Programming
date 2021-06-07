@@ -23,7 +23,7 @@ class SettingFragment : Fragment() {
     lateinit var re3:LinearLayout
     lateinit var firebaseauth : FirebaseAuth
     lateinit var databaseref : DatabaseReference
-    var firebaseUser:FirebaseUser?=null
+    lateinit var firebaseUser:FirebaseUser
     var binding:FragmentSettingBinding?=null
 
     var emailId=""
@@ -45,14 +45,13 @@ class SettingFragment : Fragment() {
         initMyPage()
         init()
 
-
     }
 
     private fun initMyPage() {
         firebaseauth= FirebaseAuth.getInstance()
         databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")
 
-        firebaseUser = firebaseauth.currentUser
+        firebaseUser = firebaseauth.currentUser!!
 
         databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).get().addOnSuccessListener {
                 emailId=it.child("emailId").value.toString()
@@ -123,7 +122,7 @@ class SettingFragment : Fragment() {
                     _,_ ->
                 //데이터베이스에서 삭제하기
                 databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).removeValue()
-
+                firebaseUser.delete()
 
                 Toast.makeText(requireContext(),"계정 삭제 완료",Toast.LENGTH_SHORT).show()
 

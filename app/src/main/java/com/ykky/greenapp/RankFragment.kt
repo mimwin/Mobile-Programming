@@ -1,59 +1,89 @@
 package com.ykky.greenapp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [RankFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class RankFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    lateinit var firebaseauth : FirebaseAuth    // 파이어베이스 인증객체
+    lateinit var databaseref : DatabaseReference    // 실시간 데이터베이스
+    lateinit var todoData : TodoData
+    lateinit var firebaseUser : FirebaseUser
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_rank, container, false)
+        val view = inflater.inflate(R.layout.fragment_rank, container, false)
+
+        init()
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RankFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RankFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun init(){
+        firebaseauth = FirebaseAuth.getInstance()
+        databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")!!
+        firebaseUser = firebaseauth.currentUser!!
+
+        //addleaderboard()
+
+        val text = view?.findViewById<TextView>(R.id.ranktext)
+
+        var rank = databaseref.child("Leaderboard").orderByChild("rate").limitToLast(5)
+
+        Log.e("RANK",rank.toString())
+        //val cnt = getLeaderCount()
+
     }
+
+    fun addleaderboard() {
+        var allcount : Double = 0.0
+        var alltrue : Double = 0.0
+        databaseref.child("UserAccount").child(firebaseUser.uid).get().addOnSuccessListener {
+            val emailId=it.child("emailId").value.toString()
+            val password=it.child("password").value.toString()
+            val registerDate = it.child("registerDate").value.toString()
+            val nickname=it.child("nickname").value.toString()
+            allcount = (it.child("allCount").value as Long).toDouble()
+            alltrue = (it.child("trueCount").value as Long).toDouble()
+
+            var useraccount = UserAccount(emailId,password,registerDate,firebaseUser.uid,nickname,ArrayList<TodoData>(),allcount,alltrue)
+
+            val rate : Double = (alltrue / allcount)* 100
+
+            Log.e("LEADERBOARD-INSIDE","$useraccount  $allcount $alltrue $rate")
+
+            val userleader = LeaderboardData(rate,useraccount)
+            val leadercount = getLeaderCount()
+
+            databaseref.child("Leaderboard")
+                    .child((leadercount+1L).toString())
+                    .setValue(userleader)
+
+            databaseref.child("Leaderboard")
+                    .orderByChild("rate")
+        }
+    }
+
+    fun getLeaderCount() : Long{
+        var count = 0L
+        databaseref.child("Leaderboard").get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                val doc = it.result!!
+                count = doc.childrenCount
+            }
+        }
+        return count
+    }
+
 }

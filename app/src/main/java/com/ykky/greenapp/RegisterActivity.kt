@@ -56,7 +56,7 @@ class RegisterActivity : AppCompatActivity() {
                             val getTime : String = getdate()
                             val firebaseUser : FirebaseUser? = firebaseauth.currentUser
                             // email, pw, registerdate, nickname
-                            useraccount = UserAccount(firebaseUser?.email.toString(),pw,getTime,nickname,todo)
+                            useraccount = UserAccount(firebaseUser?.email.toString(),pw,getTime,firebaseUser?.uid.toString(),nickname,todo,0.0,0.0)
 
                             //setvalue = insert
                             databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).setValue(useraccount)
@@ -80,7 +80,6 @@ class RegisterActivity : AppCompatActivity() {
                     //데이터베이스에서 중복 확인하여 중복되면 중복 toast 띄우기 ( 회원가입 실패 이유 )
 
                 }
-
 
             }
 

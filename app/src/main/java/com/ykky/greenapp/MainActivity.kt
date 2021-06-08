@@ -2,6 +2,7 @@ package com.ykky.greenapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ykky.greenapp.databinding.ActivityMainBinding

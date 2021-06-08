@@ -2,7 +2,6 @@ package com.ykky.greenapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ykky.greenapp.databinding.ActivityMainBinding
@@ -13,6 +12,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var nav:BottomNavigationView
     var backimgArray=arrayOf(R.drawable.field,R.drawable.ex,R.drawable.field,R.drawable.ex,R.drawable.field,R.drawable.ex)
     var backimgindex=0
+    var isCompleted=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +29,10 @@ class MainActivity : AppCompatActivity() {
         backimgindex=i
     }
 
+    fun setComplete(t:Boolean){
+        isCompleted=t
+    }
+
     private fun init() {
 
         replaceFragment(GreenFragment(),"navgreen")
@@ -41,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navtodo->{
                     //TodoAddFragment() --> TODOFragment()로 바꿔주면 됩니다!
-                    replaceFragment(TODOFragment(2021,6,7),"navtodo")
+                    replaceFragment(TODOFragment(0,0,0),"navtodo")
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navrank ->{

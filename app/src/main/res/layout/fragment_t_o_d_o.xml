@@ -66,11 +66,12 @@
         </androidx.recyclerview.widget.RecyclerView>
 
         <TextView
+            android:id="@+id/todayrate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="오늘의 달성률 : 100%"
             android:layout_marginStart="10dp"
-            android:textSize="30dp"/>
+            android:text="오늘의 달성률 : 100%"
+            android:textSize="30dp" />
 
     </LinearLayout>
 

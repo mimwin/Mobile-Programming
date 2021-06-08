@@ -31,6 +31,7 @@ class TodoCalendarFragment : Fragment() {
                 tyear=year
                 tmonth=month+1 //1월이 0
                 tdayOfMonth=dayOfMonth
+
                 (activity as MainActivity).replaceFragment(TODOFragment(tyear,tmonth,tdayOfMonth),"navtodo")
             }
         }

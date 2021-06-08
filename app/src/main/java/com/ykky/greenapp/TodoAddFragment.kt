@@ -85,19 +85,21 @@ class TodoAddFragment : Fragment() {
 
             clearInput()
             //todoFragment로 돌아가기
-            activity?.supportFragmentManager?.beginTransaction()
-                    ?.replace(R.id.fragment, TODOFragment())
-                    ?.addToBackStack(null)
-                    ?.commit()
+//            activity?.supportFragmentManager?.beginTransaction()
+//                    ?.replace(R.id.fragment, TODOFragment(0,0,0))
+//                    ?.addToBackStack(null)
+//                    ?.commit()
+            (activity as MainActivity).replaceFragment(TODOFragment(0,0,0),"navtodo")
         }
 
         cancel.setOnClickListener {
             Toast.makeText(context,"추가 취소",Toast.LENGTH_SHORT).show()
             clearInput()
-            activity?.supportFragmentManager?.beginTransaction()
-                    ?.replace(R.id.fragment, TODOFragment())
-                    ?.addToBackStack(null)
-                    ?.commit()
+//            activity?.supportFragmentManager?.beginTransaction()
+//                    ?.replace(R.id.fragment, TODOFragment(0,0,0))
+//                    ?.addToBackStack(null)
+//                    ?.commit()
+            (activity as MainActivity).replaceFragment(TODOFragment(0,0,0),"navtodo")
         }
     }
 

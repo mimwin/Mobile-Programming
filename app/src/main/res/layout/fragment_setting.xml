@@ -307,7 +307,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:text="남궁승 NAMKUNG SEUNG nkhone12356@konkuk.ac.kr"
+                        android:text="황유란 HWANG YURAN yur0920@konkuk.ac.kr"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
 
@@ -315,7 +315,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:text="황유란 HWANG YURAN yur0920@konkuk.ac.kr"
+                        android:text="남궁승 NAMKUNG SEUNG nkhone12356@konkuk.ac.kr"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
 

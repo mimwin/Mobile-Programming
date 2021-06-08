@@ -1,11 +1,13 @@
 package com.ykky.greenapp
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerOptions
@@ -61,7 +63,7 @@ class TODOFragment : Fragment() {
                     .child(firebaseUser?.uid.toString())
                     .child("todo")
                     .orderByChild("date")
-                    .equalTo("2021-06-07")
+                    .equalTo("2021-06-08")
 
             val option = FirebaseRecyclerOptions.Builder<TodoData>()
                     .setQuery(query, TodoData::class.java)
@@ -74,6 +76,29 @@ class TODOFragment : Fragment() {
             }
 
             recyclerView.adapter = adapter
+
+            val simpleCallBack = object :ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN
+            or ItemTouchHelper.UP, ItemTouchHelper.RIGHT){
+                override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val position = viewHolder.adapterPosition
+                    val item = adapter.getItem(position)
+                    databaseref.child("UserAccount")
+                            .child(firebaseUser?.uid.toString())
+                            .child("todo")
+                            .child(item.todo.toString())
+                            .removeValue()
+                            .addOnSuccessListener {
+                                Log.i("TODO","Remove Success")
+                            }
+                    adapter.notifyItemRemoved(position)
+                }
+            }
+            val itemTouchHelper = ItemTouchHelper(simpleCallBack)
+            itemTouchHelper.attachToRecyclerView(recyclerView)
 
             adapter.startListening()
             adapter.notifyDataSetChanged()
@@ -92,10 +117,6 @@ class TODOFragment : Fragment() {
                     ?.commit()
             }
         }
-
         return view
     }
-
-
-
 }

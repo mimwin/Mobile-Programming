@@ -46,7 +46,7 @@ class TodoAddFragment : Fragment() {
         databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")
         firebaseUser = firebaseauth.currentUser!!
 
-        val date = "2021-05-31"
+        val date = "2021-06-08"
 
         //투두 개수 가져오기
         count = getCount(date)
@@ -56,13 +56,13 @@ class TodoAddFragment : Fragment() {
             val todotext = todoEditText.text.toString()
             val memo = memo.text.toString()
 
-            todoData = TodoData("2021-06-07",todotext,memo,false)
+            todoData = TodoData("2021-06-08",todotext,memo,false)
 
             // 투두 추가
             databaseref.child("UserAccount")
                     .child(firebaseUser.uid.toString())
                     .child("todo")
-                    .child((count+1L).toString())
+                    .child(todoData.todo)
                     .setValue(todoData)
 
             // 개수 증가 (전체)
@@ -194,7 +194,7 @@ class TodoAddFragment : Fragment() {
                 .child("todo").get().addOnSuccessListener {
 
                     for(i in 1..count){
-                        if(it.child(i.toString()).child("checked").value == "true"){
+                        if(it.child(i.toString()).child("checked").value == true){
                             truecount++
                         }
                     }
@@ -213,7 +213,7 @@ class TodoAddFragment : Fragment() {
                 .child("todo")
                 .child((count).toString())
                 .child("checked")
-                .setValue("true")
+                .setValue(true)
     }
 
     fun clearInput(){

@@ -42,9 +42,6 @@ class RegisterActivity : AppCompatActivity() {
                 val pw = etPwd.text.toString()
                 val nickname = nickname.text.toString()
                 val repw = etPwdAgain.text.toString()
-                todo.add(TodoData("hi","hi","hi",false))
-
-                Log.e("todo","$todo")
 
                 //비밀번호 == 비밀번호확인 인 경우
                 if(pw == repw){
@@ -55,11 +52,24 @@ class RegisterActivity : AppCompatActivity() {
                         if(task.isSuccessful){
                             val getTime : String = getdate()
                             val firebaseUser : FirebaseUser? = firebaseauth.currentUser
+
                             // email, pw, registerdate, nickname
-                            useraccount = UserAccount(firebaseUser?.email.toString(),pw,getTime,firebaseUser?.uid.toString(),nickname,todo,0.0,0.0)
+                            useraccount = UserAccount(firebaseUser?.email.toString(),pw,getTime,firebaseUser?.uid.toString(),nickname,ArrayList<TodoData>(),0.0,0.0)
 
                             //setvalue = insert
                             databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).setValue(useraccount)
+
+                            val userleader = LeaderboardData(0.0,useraccount)
+
+                            databaseref.child("Leaderboard").get().addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    val doc = it.result!!
+                                    val count = doc.childrenCount
+                                    databaseref.child("Leaderboard").child(count.toString()).setValue(userleader)
+                                    Log.e("LEADERBOARD COUNT",count.toString())
+                                }
+                            }
+
 
                             Toast.makeText(this@RegisterActivity,"회원가입 성공",Toast.LENGTH_SHORT).show()
 

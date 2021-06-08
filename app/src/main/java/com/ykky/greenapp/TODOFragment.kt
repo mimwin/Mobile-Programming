@@ -8,6 +8,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerOptions
@@ -54,8 +55,6 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
         var year = view.findViewById<TextView>(R.id.year)
         var date = view.findViewById<TextView>(R.id.date)
 
-
-
         var now = LocalDate.now()
         var yearnow = now.format(DateTimeFormatter.ofPattern("yyyy년"))
         var datenow = now.format(DateTimeFormatter.ofPattern("MM월 dd일"))
@@ -78,10 +77,10 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
 
             //해당날짜 todo 가져와서 recyclerView에 출력
             val query = databaseref.child("UserAccount")
-                .child(firebaseUser?.uid.toString())
-                .child("todo")
-                .orderByChild("date")
-                .equalTo("2021-06-07")
+                    .child(firebaseUser?.uid.toString())
+                    .child("todo")
+                    .orderByChild("date")
+                    .equalTo("2021-06-08")
 
             val option = FirebaseRecyclerOptions.Builder<TodoData>()
                 .setQuery(query, TodoData::class.java)
@@ -94,6 +93,29 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
             }
 
             recyclerView.adapter = adapter
+
+            val simpleCallBack = object :ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN
+            or ItemTouchHelper.UP, ItemTouchHelper.RIGHT){
+                override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val position = viewHolder.adapterPosition
+                    val item = adapter.getItem(position)
+                    databaseref.child("UserAccount")
+                            .child(firebaseUser?.uid.toString())
+                            .child("todo")
+                            .child(item.todo.toString())
+                            .removeValue()
+                            .addOnSuccessListener {
+                                Log.i("TODO","Remove Success")
+                            }
+                    adapter.notifyItemRemoved(position)
+                }
+            }
+            val itemTouchHelper = ItemTouchHelper(simpleCallBack)
+            itemTouchHelper.attachToRecyclerView(recyclerView)
 
             adapter.startListening()
             adapter.notifyDataSetChanged()
@@ -121,6 +143,7 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                 (activity as MainActivity).replaceFragment(TodoCalendarFragment(),"todocal")
             }
         }
+
         return view
     }
 

@@ -177,7 +177,7 @@ class TodoAddFragment : Fragment() {
                 .child("todo").get().addOnCompleteListener {
                     if (it.isSuccessful) {
                         val doc = it.result!!
-                        count = doc.child(date).childrenCount
+                        count = doc.childrenCount -1
                     }
                 }
         return count
@@ -193,9 +193,8 @@ class TodoAddFragment : Fragment() {
                 .child(firebaseUser.uid.toString())
                 .child("todo").get().addOnSuccessListener {
 
-                    val list = it.child(todoData.date)
                     for(i in 1..count){
-                        if(list.child(i.toString()).child("checked").value == "true"){
+                        if(it.child(i.toString()).child("checked").value == "true"){
                             truecount++
                         }
                     }
@@ -212,7 +211,6 @@ class TodoAddFragment : Fragment() {
         databaseref.child("UserAccount")
                 .child(firebaseUser.uid.toString())
                 .child("todo")
-                .child(date)
                 .child((count).toString())
                 .child("checked")
                 .setValue("true")

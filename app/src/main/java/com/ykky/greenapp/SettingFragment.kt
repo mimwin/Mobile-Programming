@@ -60,9 +60,9 @@ class SettingFragment : Fragment() {
                 nickname=it.child("nickname").value.toString()
 
                 binding?.apply {
-                    myid.text="아이디 : "+emailId
-                    mypassword.text="비밀번호 : "+password
-                    mynickname.text="닉네임 : "+nickname
+                    myid.text="아이디 : $emailId"
+                    mypassword.text="비밀번호 : $password"
+                    mynickname.text="닉네임 : $nickname"
                 }
         }
 
@@ -102,9 +102,9 @@ class SettingFragment : Fragment() {
                 Toast.makeText(requireContext(),"마이 페이지 수정 완료",Toast.LENGTH_SHORT).show()
 
                 //마이 페이지에 변경된 부분 반영
-                binding!!.mypassword.text="비밀번호 : "+data[1]
+                binding!!.mypassword.text="비밀번호 : ${data[1]}"
                 password=data[1]
-                binding!!.mynickname.text="닉네임 : "+data[2]
+                binding!!.mynickname.text="닉네임 : ${data[2]}"
                 nickname=data[2]
 
             }

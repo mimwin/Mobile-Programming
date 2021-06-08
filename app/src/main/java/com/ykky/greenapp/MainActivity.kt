@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navtodo->{
                     //TodoAddFragment() --> TodoFragment()로 바꿔주면 됩니다!
-                    replaceFragment(TodoAddFragment(),"navtodo")
+                    replaceFragment(TODOFragment(),"navtodo")
                     nav.itemIconTintList=ContextCompat.getColorStateList(this,R.color.btn2)
                     nav.itemTextColor=ContextCompat.getColorStateList(this,R.color.btn2)
                     return@setOnNavigationItemSelectedListener true

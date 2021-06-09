@@ -9,81 +9,151 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import java.lang.Math.round
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class RankFragment : Fragment() {
 
     lateinit var firebaseauth : FirebaseAuth    // 파이어베이스 인증객체
     lateinit var databaseref : DatabaseReference    // 실시간 데이터베이스
-    lateinit var todoData : TodoData
     lateinit var firebaseUser : FirebaseUser
+
+    lateinit var first : TextView
+    lateinit var second : TextView
+    lateinit var third : TextView
+    lateinit var fourth : TextView
+    lateinit var fifth : TextView
+    lateinit var firstpercent : TextView
+    lateinit var secondpercent : TextView
+    lateinit var thirdpercent : TextView
+    lateinit var fourthpercent : TextView
+    lateinit var fifthpercent : TextView
+    lateinit var mypercent : TextView
+    lateinit var mytotaltodo : TextView
+    lateinit var mycompletetodo : TextView
+    lateinit var myusedday : TextView
+    lateinit var myrelative : TextView
+    lateinit var yourrank : TextView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         val view = inflater.inflate(R.layout.fragment_rank, container, false)
+
+        first = view.findViewById(R.id.first)
+        second = view.findViewById(R.id.second)
+        third = view.findViewById(R.id.third)
+        fourth = view.findViewById(R.id.fourth)
+        fifth = view.findViewById(R.id.fifth)
+        firstpercent = view.findViewById(R.id.firstpercent)
+        secondpercent = view.findViewById(R.id.secondpercent)
+        thirdpercent = view.findViewById(R.id.thirdpercent)
+        fourthpercent = view.findViewById(R.id.fourthpercent)
+        fifthpercent = view.findViewById(R.id.fifthpercent)
+        mypercent = view.findViewById(R.id.mypercent)
+        mytotaltodo = view.findViewById(R.id.mytotaltodo)
+        mycompletetodo = view.findViewById(R.id.mycompletedtodo)
+        myusedday = view.findViewById(R.id.myusedday)
+        myrelative = view.findViewById(R.id.myrelative)
+        yourrank = view.findViewById(R.id.yourrank)
 
         init()
         return view
     }
 
-    private fun init(){
+    private fun init() {
         firebaseauth = FirebaseAuth.getInstance()
-        databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")!!
+        databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")
         firebaseUser = firebaseauth.currentUser!!
 
-        //addleaderboard()
-
-        val text = view?.findViewById<TextView>(R.id.ranktext)
-
-        var rank = databaseref.child("Leaderboard").orderByChild("rate").limitToLast(5)
-
-        Log.e("RANK",rank.toString())
-        //val cnt = getLeaderCount()
-
-    }
-
-    fun addleaderboard() {
-        var allcount : Double = 0.0
-        var alltrue : Double = 0.0
-        databaseref.child("UserAccount").child(firebaseUser.uid).get().addOnSuccessListener {
-            val emailId=it.child("emailId").value.toString()
-            val password=it.child("password").value.toString()
-            val registerDate = it.child("registerDate").value.toString()
-            val nickname=it.child("nickname").value.toString()
-            allcount = (it.child("allCount").value as Long).toDouble()
-            alltrue = (it.child("trueCount").value as Long).toDouble()
-
-            var useraccount = UserAccount(emailId,password,registerDate,firebaseUser.uid,nickname,ArrayList<TodoData>(),allcount,alltrue)
-
-            val rate : Double = (alltrue / allcount)* 100
-
-            Log.e("LEADERBOARD-INSIDE","$useraccount  $allcount $alltrue $rate")
-
-            val userleader = LeaderboardData(rate,useraccount)
-            val leadercount = getLeaderCount()
-
-            databaseref.child("Leaderboard")
-                    .child((leadercount+1L).toString())
-                    .setValue(userleader)
-
-            databaseref.child("Leaderboard")
-                    .orderByChild("rate")
-        }
-    }
-
-    fun getLeaderCount() : Long{
-        var count = 0L
-        databaseref.child("Leaderboard").get().addOnCompleteListener {
-            if (it.isSuccessful) {
-                val doc = it.result!!
-                count = doc.childrenCount
+        val countlistener : ValueEventListener = object  : ValueEventListener {
+            var c = 0
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(item in snapshot.children){
+                    c++
+                    if(c==5){
+                        first.text = item.child("useraccount").child("nickname").value.toString()
+                        firstpercent.text = item.child("rate").value.toString()
+                    }
+                    else if(c==4){
+                        second.text = item.child("useraccount").child("nickname").value.toString()
+                        secondpercent.text = item.child("rate").value.toString()
+                    }
+                    else if(c==3){
+                        third.text = item.child("useraccount").child("nickname").value.toString()
+                        thirdpercent.text = item.child("rate").value.toString()
+                    }
+                    else if(c==2){
+                        fourth.text = item.child("useraccount").child("nickname").value.toString()
+                        fourthpercent.text = item.child("rate").value.toString()
+                    }
+                    else if(c==1){
+                        fifth.text = item.child("useraccount").child("nickname").value.toString()
+                        fifthpercent.text = item.child("rate").value.toString()
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
             }
         }
-        return count
+
+        val mylistener : ValueEventListener = object  : ValueEventListener {
+            var c = 0
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var count = 0L
+                databaseref.child("Leaderboard").get().addOnSuccessListener {
+                    count = it.childrenCount
+                    for (item in snapshot.children) {
+                        c++
+                        if (item.child("useraccount").child("token").value.toString() == firebaseUser.uid.toString()) {
+                            val point = round((c - 1) / (count.toDouble()) * 100)
+                            yourrank.text = "${count - c + 1}등"
+                            myrelative.text = "당신은 ${point}%의 유저보다 더 열심히 살고 있습니다!"
+                            Log.e("MyLISTENER - LEADER BOARD", "$count  $point $c")
+                        }
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+            }
+        }
+
+        val query = databaseref.child("Leaderboard")
+                .orderByChild("rate").limitToLast(5)
+        query.addListenerForSingleValueEvent(countlistener)
+
+        val query2 = databaseref.child("Leaderboard").orderByChild("rate")
+        query2.addListenerForSingleValueEvent(mylistener)
+
+
+        databaseref.child("UserAccount")
+                .child(firebaseUser.uid.toString()).get().addOnSuccessListener {
+                    mypercent.text = "${it.child("nickname").value.toString()}" +"님의 달성률 확인"
+                    mytotaltodo.text = it.child("allCount").value.toString()
+                    mycompletetodo.text = it.child("trueCount").value.toString()
+
+                    val dateFormat = SimpleDateFormat("yyyyMMdd",Locale.KOREAN)
+                    val registerdate = dateFormat.parse(it.child("registerDate").value.toString())
+                    val today = dateFormat.parse(getdate())
+
+                    myusedday.text = "${( (today.time - registerdate.time) / (24*60*60*1000) )+1}"
+
+                }
+    }
+
+    private fun getdate() : String{
+        val now : Long = System.currentTimeMillis()
+        val mdate : Date = Date(now)
+        val simpelDate : SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val getTime : String = simpelDate.format(mdate)
+        return getTime
     }
 
 }

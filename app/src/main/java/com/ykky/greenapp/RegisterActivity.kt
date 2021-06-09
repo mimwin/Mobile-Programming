@@ -64,9 +64,7 @@ class RegisterActivity : AppCompatActivity() {
                             databaseref.child("Leaderboard").get().addOnCompleteListener {
                                 if (it.isSuccessful) {
                                     val doc = it.result!!
-                                    val count = doc.childrenCount
-                                    databaseref.child("Leaderboard").child(count.toString()).setValue(userleader)
-                                    Log.e("LEADERBOARD COUNT",count.toString())
+                                    databaseref.child("Leaderboard").child(firebaseUser?.uid.toString()).setValue(userleader)
                                 }
                             }
 
@@ -99,7 +97,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun getdate() : String{
         val now : Long = System.currentTimeMillis()
         val mdate : Date = Date(now)
-        val simpelDate : SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val simpelDate : SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
         val getTime : String = simpelDate.format(mdate)
         return getTime
     }

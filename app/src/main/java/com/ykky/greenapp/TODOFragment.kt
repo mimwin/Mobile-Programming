@@ -8,6 +8,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,8 +17,8 @@ import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import java.lang.Math.round
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -27,18 +29,17 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
     lateinit var adapter: TodoAdapter
     lateinit var layoutManager: LinearLayoutManager
     lateinit var firebaseUser : FirebaseUser
+    lateinit var todayrate : TextView
 
     var backimg=0
     var tyear=y
     var tmonth=m
     var tday=d
 
-    var count = 0L
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        refreshFragment(this, requireFragmentManager())
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-
     }
 
     override fun onCreateView(
@@ -51,7 +52,7 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
         val addBtn = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
         val calendarBtn = view.findViewById<ImageButton>(R.id.calendarBtn)
         val todobackimg=view.findViewById<ImageView>(R.id.todobackimg)
-        val todayrate=view.findViewById<TextView>(R.id.todayrate)
+        todayrate=view.findViewById<TextView>(R.id.todayrate)
         var year = view.findViewById<TextView>(R.id.year)
         var date = view.findViewById<TextView>(R.id.date)
 
@@ -70,30 +71,36 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
 
         view.apply {
 
+            var count = 0L
+            var truecount : Double = 0.0
+            var rate : Double = 0.0
             firebaseauth = FirebaseAuth.getInstance()
             databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")
             firebaseUser= firebaseauth.currentUser!!
 
+            TodayRate2("2021-06-09")
 
-            //해당날짜 todo 가져와서 recyclerView에 출력
+            //해당날짜 투두 가져와서 recyclerView에 출력
             val query = databaseref.child("UserAccount")
-                    .child(firebaseUser?.uid.toString())
+                    .child(firebaseUser.uid.toString())
                     .child("todo")
                     .orderByChild("date")
-                    .equalTo("2021-06-08")
+                    .`equalTo`("2021-06-09")
 
             val option = FirebaseRecyclerOptions.Builder<TodoData>()
                 .setQuery(query, TodoData::class.java)
                 .build()
             adapter = TodoAdapter(option)
+            TodayRate2("2021-06-09")
             adapter.itemClickListener = object : TodoAdapter.OnItemClickListener {
                 override fun onItemClick(view: View, position: Int) {
-                    //todo 클릭시 update 화면으로 이동
+                    //투두 클릭시 update 화면으로 이동
                 }
             }
 
             recyclerView.adapter = adapter
 
+            TodayRate2("2021-06-09")
             val simpleCallBack = object :ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN
             or ItemTouchHelper.UP, ItemTouchHelper.RIGHT){
                 override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -104,13 +111,15 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                     val position = viewHolder.adapterPosition
                     val item = adapter.getItem(position)
                     databaseref.child("UserAccount")
-                            .child(firebaseUser?.uid.toString())
+                            .child(firebaseUser.uid.toString())
                             .child("todo")
                             .child(item.todo.toString())
                             .removeValue()
                             .addOnSuccessListener {
                                 Log.i("TODO","Remove Success")
+                                TodayRate2("2021-06-09")
                             }
+                    IncreaseCount(false)
                     adapter.notifyItemRemoved(position)
                 }
             }
@@ -121,71 +130,106 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
             adapter.notifyDataSetChanged()
 
             addBtn.setOnClickListener {
-//                activity?.supportFragmentManager?.beginTransaction()
-//                    ?.replace(R.id.fragment, TodoAddFragment())
-//                    ?.addToBackStack(null)
-//                    ?.commit()
+                activity?.supportFragmentManager?.beginTransaction()
+                    ?.replace(R.id.fragment, TodoAddFragment())
+                    ?.addToBackStack(null)
+                    ?.commit()
                 (activity as MainActivity).replaceFragment(TodoAddFragment(),"todoadd")
             }
-
-           // val rate=TodayRate("2021-06-08")
-            //todayrate.text="오늘의 달성률 : $rate"
 
             backimg = (activity as MainActivity).getBackImg()
             todobackimg.setBackgroundResource(backimg)
             todobackimg.alpha = 0.7f
 
             calendarBtn.setOnClickListener {
-//                activity?.supportFragmentManager?.beginTransaction()
-//                    ?.replace(R.id.fragment, TodoCalendarFragment())
-//                    ?.addToBackStack("cal")
-//                    ?.commit()
+                activity?.supportFragmentManager?.beginTransaction()
+                    ?.replace(R.id.fragment, TodoCalendarFragment())
+                    ?.addToBackStack("cal")
+                    ?.commit()
                 (activity as MainActivity).replaceFragment(TodoCalendarFragment(),"todocal")
             }
         }
-
+        // Fragment 클래스에서 사용 시
+        refreshFragment(this, requireFragmentManager())
         return view
     }
 
-    // 해당 날짜에 해당하는 투두 개수 가져오기
-    fun getCount(date : String ): Long {
-        databaseref.child("UserAccount")
-            .child(firebaseUser.uid.toString())
-            .child("todo").get().addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val doc = it.result!!
-                    count = doc.childrenCount -1
-                }
-            }
-        return count
+    // Fragment 새로고침
+    fun refreshFragment(fragment: Fragment, fragmentManager: FragmentManager) {
+        var ft: FragmentTransaction = fragmentManager.beginTransaction()
+        ft.detach(fragment).attach(fragment).commit()
     }
 
-    fun TodayRate(date:String):Double {
+    fun TodayRate2(date:String) : Double{
 
-        val cnt = getCount(date)
+        var count = 0L
         var truecount : Double = 0.0
         var rate : Double = 0.0
 
-        databaseref.child("UserAccount")
-            .child(firebaseUser.uid.toString())
-            .child("todo").get().addOnSuccessListener {
+        val countlistener : ValueEventListener = object  : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                count = snapshot.childrenCount
+                for(item in snapshot.children){
+                    if(item.child("checked").value==true)truecount++
+                }
 
-                for(i in 1..count){
-                    if(it.child(i.toString()).child("checked").value == "true"){
-                        truecount++
+                rate = ((truecount/(count)) * 100)
+                val rateInt : Int = round(rate).toInt()
+
+                todayrate.text= "오늘의 달성률 : ${rateInt.toString()}"
+                Log.e("LISTENER - INSIDE","${count.toString()} $truecount  $rate")
+            }
+            override fun onCancelled(error: DatabaseError) {
+            }
+        }
+
+        val query = databaseref.child("UserAccount")
+                .child(firebaseUser.uid.toString())
+                .child("todo")
+                .orderByChild("date")
+                .equalTo(date)
+
+        query.addListenerForSingleValueEvent(countlistener)
+
+        Log.e("LISTENER - OUTSIDE","${count.toString()} $truecount")
+        return rate
+    }
+
+    fun IncreaseCount(f : Boolean) {
+        databaseref.child("UserAccount")
+                .child(firebaseUser.uid.toString()).get().addOnSuccessListener { it ->
+                    var count = it.child("allCount").value as Long
+
+                    if(f){
+                        count++
+                        databaseref.child("UserAccount")
+                                .child(firebaseUser.uid.toString())
+                                .child("allCount")
+                                .setValue(count)
+                    }
+                    else if(!f){
+                        count--
+                        databaseref.child("UserAccount")
+                                .child(firebaseUser.uid.toString())
+                                .child("allCount")
+                                .setValue(count)
+                    }
+
+                    var truecount = it.child("trueCount").value as Long
+
+                    //리더보드 갱신
+                    databaseref.child("Leaderboard").child(firebaseUser.uid.toString()).get().addOnSuccessListener { it2->
+
+                        databaseref.child("Leaderboard")
+                                .child(firebaseUser.uid.toString()).child("allCount").setValue(count)
+                        val rate : Double = kotlin.math.round(truecount / (count.toDouble()) * 100.0)
+
+                        Log.e("INC COUNT - LEADER BOARD","$count  $truecount  $rate")
+                        databaseref.child("Leaderboard").child(firebaseUser.uid.toString()).child("rate").setValue(rate)
+
                     }
                 }
-                rate = ((truecount/(cnt)) * 100)
-                Log.e("TODAY RATE - INSIDE","$cnt  $truecount  $rate")
-                if(rate==100.0) {
-                    (activity as MainActivity).setComplete(true)
-                }
-                else{
-                    (activity as MainActivity).setComplete(false)
-                }
-            }
-        return rate
-
     }
+
 
 }

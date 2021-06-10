@@ -79,20 +79,21 @@ class RankFragment : Fragment() {
         var hour = timearr[3]
         var min = timearr[4]
         var sec = timearr[5]
-//        if(date=="01"&&hour=="00"&&min=="00"&&sec=="00"){
-        //달이 바뀌면 allcount truecount 초기화
-        databaseref.child("Leaderboard").get().addOnSuccessListener {
-//                val it2=it.value as DataSnapshot
-//                Log.i("itititi",it2.key.toString())
-////                    it2.{
-////                        databaseref.child("Leaderboard").child(hvalue.g.toString()).child("rate").setValue(0)
-////                        databaseref.child("Leaderboard").child(it2.value.toString()).child("useraccount")
-////                            .child("allCount").setValue(0)
-////                        databaseref.child("Leaderboard").child(it2.value.toString()).child("useraccount")
-////                            .child("trueCount").setValue(0)
-////                    }
-//                }
-//        }
+        if(date=="01"&&hour=="00"&&min=="00"&&sec=="00"){
+            //달이 바뀌면 leaderboard rate, allcount truecount 초기화
+            databaseref.child("Leaderboard").get().addOnSuccessListener {
+                    val count=it.childrenCount
+                    for(item in it.children){
+                        val uid=item.key!!
+                        databaseref.child("Leaderboard").child(uid).child("rate").setValue(0)
+                        databaseref.child("Leaderboard").child(uid).child("useraccount")
+                            .child("allCount").setValue(0)
+                        databaseref.child("Leaderboard").child(uid).child("useraccount")
+                            .child("trueCount").setValue(0)
+                    }
+
+            }
+        }
 
             val countlistener: ValueEventListener = object : ValueEventListener {
                 var c = 0
@@ -176,7 +177,6 @@ class RankFragment : Fragment() {
                 }
         }
 
-    }
 
     private fun getdate(): String {
         val now: Long = System.currentTimeMillis()

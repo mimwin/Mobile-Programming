@@ -1,5 +1,7 @@
 package com.ykky.greenapp
 
-data class TodoData(var date : String, var todo:String, var memo:String, var isChecked : Boolean) {
+import java.io.Serializable
+
+data class TodoData(var date : String, var todo:String, var memo:String, var isChecked : Boolean) : Serializable {
     constructor():this("2021-01-01", "noinfo","noinfo",false)
 }

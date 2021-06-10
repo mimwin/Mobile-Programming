@@ -3,15 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    android:padding="5dp">
+    android:padding="5dp"
+    android:background="@color/white">
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/checkBtn"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_weight="0"
         android:layout_gravity="center"
-        android:background="@drawable/btnstyle"/>
+        android:layout_weight="0"
+        android:background="@drawable/btnstyle" />
 
     <TextView
         android:id="@+id/todo"

@@ -25,6 +25,7 @@ class TodoAddFragment : Fragment() {
     lateinit var todoEditText : EditText
     lateinit var memo : EditText
     lateinit var firebaseUser : FirebaseUser
+    lateinit var date : String
     var count = 0L
     var trueflag = false
 
@@ -39,6 +40,8 @@ class TodoAddFragment : Fragment() {
         todoEditText = view.findViewById(R.id.todoEditText)
         memo = view.findViewById(R.id.memo)
 
+        date = requireArguments().getString("date").toString()
+
         init()
         return view
     }
@@ -48,36 +51,44 @@ class TodoAddFragment : Fragment() {
         databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")
         firebaseUser = firebaseauth.currentUser!!
 
-        val date = "2021-06-08"
+        //val date = "2021-06-09"
 
         finish.setOnClickListener {
 
             val todotext = todoEditText.text.toString()
             val memo = memo.text.toString()
 
-            todoData = TodoData("2021-06-09",todotext,memo,false)
+            if(todotext==""){
+                Toast.makeText(context, "Todo를 입력하세요", Toast.LENGTH_SHORT).show()
+            }else{
+                todoData = TodoData(date,todotext,memo,false)
 
-            // 투두 추가
-            databaseref.child("UserAccount")
-                    .child(firebaseUser.uid.toString())
-                    .child("todo")
-                    .child(todoData.todo)
-                    .setValue(todoData)
+                // 투두 추가
+                databaseref.child("UserAccount")
+                        .child(firebaseUser.uid.toString())
+                        .child("todo")
+                        .child(todoData.todo)
+                        .setValue(todoData)
 
-            // 개수 증가 (전체)
-            IncreaseCount(true)
 
-            Toast.makeText(context, "추가 완료", Toast.LENGTH_SHORT).show()
+                // 개수 증가 (전체)
+                IncreaseCount(true)
 
-            clearInput()
-            //todoFragment로 돌아가기
-            (activity as MainActivity).replaceFragment(TODOFragment(0,0,0),"navtodo")
+                Toast.makeText(context, "추가 완료", Toast.LENGTH_SHORT).show()
+
+                var token = date.split('-')
+
+                clearInput()
+                //todoFragment로 돌아가기
+                (activity as MainActivity).replaceFragment(TODOFragment(token[0].toInt(),token[1].toInt(),token[2].toInt()),"navtodo")
+            }
         }
 
         cancel.setOnClickListener {
             Toast.makeText(context,"추가 취소",Toast.LENGTH_SHORT).show()
+            var token = date.split('-')
             clearInput()
-            (activity as MainActivity).replaceFragment(TODOFragment(0,0,0),"navtodo")
+            (activity as MainActivity).replaceFragment(TODOFragment(token[0].toInt(),token[1].toInt(),token[2].toInt()),"navtodo")
         }
     }
 

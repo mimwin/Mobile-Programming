@@ -63,17 +63,24 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
         var now = LocalDate.now()
         var yearnow = now.format(DateTimeFormatter.ofPattern("yyyy년"))
         var datenow = now.format(DateTimeFormatter.ofPattern("MM월 dd일"))
-        //today=yearnow.toString().substring(0,4)+"-"+datenow.toString().substring(0,3)+"-"+datenow.toString().substring(4,6)
-        today="2021-06-09"
+        var nyear = now.format(DateTimeFormatter.ofPattern("yyyy"))
+        var nmonth = now.format(DateTimeFormatter.ofPattern("MM"))
+        var ndate = now.format(DateTimeFormatter.ofPattern("dd"))
+
+
         if(tyear==0){
             year.text = yearnow.toString()
             date.text = datenow.toString()
+            tyear = nyear.toInt()
+            tmonth = nmonth.toInt()
+            tday = ndate.toInt()
         }
         else{
             year.text = "${tyear}년"
             date.text = "${tmonth}월 ${tday}일"
         }
 
+        today = "$tyear-$tmonth-$tday"
         view.apply {
 
             var count = 0L
@@ -83,23 +90,34 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
             databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")
             firebaseUser= firebaseauth.currentUser!!
 
-            TodayRate2("2021-06-09")
+            //TodayRate2("2021-06-09")
 
             //해당날짜 투두 가져와서 recyclerView에 출력
             val query = databaseref.child("UserAccount")
                     .child(firebaseUser.uid.toString())
                     .child("todo")
                     .orderByChild("date")
-                    .`equalTo`("2021-06-09")
+                    .equalTo("$tyear-$tmonth-$tday")
 
             val option = FirebaseRecyclerOptions.Builder<TodoData>()
-                .setQuery(query, TodoData::class.java)
-                .build()
+                    .setQuery(query, TodoData::class.java)
+                    .build()
             adapter = TodoAdapter(option)
-            TodayRate2("2021-06-09")
+            //TodayRate2("2021-06-09")
             adapter.itemClickListener = object : TodoAdapter.OnItemClickListener {
                 override fun onItemClick(view: View, position: Int) {
-                    (activity as MainActivity).replaceFragment(TodoCalendarFragment(),"todoadd")
+                    val bundle = Bundle()
+                    val Updatefragment = TodoUpdateFragment()
+                    val gitem = adapter.getItem(position)
+                    bundle.putSerializable("data",gitem)
+
+                    Updatefragment.arguments = bundle
+                    //todo 클릭시 update 화면으로 이동
+                    /*activity?.supportFragmentManager?.beginTransaction()
+                            ?.replace(R.id.fragment, Updatefragment)
+                            ?.addToBackStack(null)
+                            ?.commit()*/
+                    (activity as MainActivity).replaceFragment(Updatefragment,"todoadd")
                 }
 
                 override fun onCheckClick(holder:TodoAdapter.ViewHolder, view: View, position: Int) {
@@ -127,15 +145,15 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                         Toast.makeText(requireContext(), "완료", Toast.LENGTH_SHORT).show()
                     }
                     val getdate=year.text.substring(0,5)+"-"+date.text.substring(0,3)+"-"+date.text.substring(4,6)
-                    TodayRate2("2021-06-09")
+                    TodayRate2("$tyear-$tmonth-$tday")
                 }
             }
 
             recyclerView.adapter = adapter
 
-            TodayRate2("2021-06-09")
+            TodayRate2("$tyear-$tmonth-$tday")
             val simpleCallBack = object :ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN
-            or ItemTouchHelper.UP, ItemTouchHelper.RIGHT){
+            or ItemTouchHelper.UP, ItemTouchHelper.LEFT){
                 override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                     return false
                 }
@@ -150,7 +168,7 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                             .removeValue()
                             .addOnSuccessListener {
                                 Log.i("TODO","Remove Success")
-                                TodayRate2("2021-06-09")
+                                TodayRate2("$tyear-$tmonth-$tday")
                             }
                     IncreaseCount(false)
                     adapter.notifyItemRemoved(position)
@@ -163,7 +181,14 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
             adapter.notifyDataSetChanged()
 
             addBtn.setOnClickListener {
-                (activity as MainActivity).replaceFragment(TodoAddFragment(),"todoadd")
+
+                val bundle = Bundle()
+                val Addfragment = TodoAddFragment()
+                val ndate = "$tyear-$tmonth-$tday"
+                bundle.putString("date", ndate)
+
+                Addfragment.arguments = bundle
+                (activity as MainActivity).replaceFragment(Addfragment,"todoadd")
             }
 
             backimg = (activity as MainActivity).getBackImg()

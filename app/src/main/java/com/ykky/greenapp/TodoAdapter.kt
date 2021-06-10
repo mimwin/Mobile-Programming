@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
@@ -16,7 +15,7 @@ import com.ykky.greenapp.databinding.RowBinding
 import kotlin.math.round
 
 
-class TodoAdapter(options: FirebaseRecyclerOptions<TodoData>)
+class TodoAdapter(val options: FirebaseRecyclerOptions<TodoData>)
     : FirebaseRecyclerAdapter<TodoData, TodoAdapter.ViewHolder>(options){
     lateinit var firebaseauth : FirebaseAuth    // 파이어베이스 인증객체
     lateinit var databaseref : DatabaseReference    // 실시간 데이터베이스
@@ -24,13 +23,17 @@ class TodoAdapter(options: FirebaseRecyclerOptions<TodoData>)
 
     interface OnItemClickListener{
         fun onItemClick(view: View, position: Int)
+        fun onCheckClick(holder:ViewHolder,view:View,position:Int)
     }
 
     var itemClickListener:OnItemClickListener?=null
 
     inner class ViewHolder(val binding: RowBinding): RecyclerView.ViewHolder(binding.root){
         init {
-            binding.root.setOnClickListener {
+            binding.checkBtn.setOnClickListener {
+                itemClickListener!!.onCheckClick(this,it, adapterPosition)
+            }
+            binding.todo.setOnClickListener {
                 itemClickListener!!.onItemClick(it, adapterPosition)
             }
         }
@@ -46,38 +49,47 @@ class TodoAdapter(options: FirebaseRecyclerOptions<TodoData>)
         databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")
         firebaseUser = firebaseauth.currentUser!!
 
-        holder.binding.apply {
-            checkBtn.isSelected = model.isChecked
-            todo.text = model.todo.toString()
-
-            checkBtn.setOnClickListener {
-                if(model.isChecked){
-                    model.isChecked = false
-                    checkBtn.isSelected = false
-                    databaseref.child("UserAccount")
-                            .child(firebaseUser.uid.toString())
-                            .child("todo")
-                            .child(model.todo.toString())
-                            .child("checked")
-                            .setValue(false)
-                    IncreaseTrue(false)
-                    Toast.makeText(it.context, "취소", Toast.LENGTH_SHORT).show()
-
-                }else{
-                    model.isChecked = true
-                    checkBtn.isSelected = true
-                    databaseref.child("UserAccount")
-                            .child(firebaseUser.uid.toString())
-                            .child("todo")
-                            .child(model.todo.toString())
-                            .child("checked")
-                            .setValue(true)
-                    IncreaseTrue(true)
-                    Toast.makeText(it.context, "완료", Toast.LENGTH_SHORT).show()
-
-                }
-            }
+        if(model.isChecked) {
+            holder.binding.checkBtn.isSelected=true
         }
+        else{
+            holder.binding.checkBtn.isSelected=false
+        }
+        holder.binding.todo.text=model.todo.toString()
+
+
+//        holder.binding.apply {
+//            checkBtn.isSelected = model.isChecked
+//            todo.text = model.todo.toString()
+//
+//            checkBtn.setOnClickListener {
+//                if(model.isChecked){
+//                    model.isChecked = false
+//                    checkBtn.isSelected = false
+//                    databaseref.child("UserAccount")
+//                            .child(firebaseUser.uid.toString())
+//                            .child("todo")
+//                            .child(model.todo.toString())
+//                            .child("checked")
+//                            .setValue(false)
+//                    IncreaseTrue(false)
+//                    Toast.makeText(it.context, "취소", Toast.LENGTH_SHORT).show()
+//
+//                }else{
+//                    model.isChecked = true
+//                    checkBtn.isSelected = true
+//                    databaseref.child("UserAccount")
+//                            .child(firebaseUser.uid.toString())
+//                            .child("todo")
+//                            .child(model.todo.toString())
+//                            .child("checked")
+//                            .setValue(true)
+//                    IncreaseTrue(true)
+//                    Toast.makeText(it.context, "완료", Toast.LENGTH_SHORT).show()
+//
+//                }
+//            }
+//        }
     }
 
     fun IncreaseTrue(f : Boolean){

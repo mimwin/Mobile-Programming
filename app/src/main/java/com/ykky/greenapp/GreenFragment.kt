@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.ykky.greenapp.databinding.FragmentGreenBinding
-import java.time.LocalDateTime
+import java.text.SimpleDateFormat
+import java.util.*
 
 class GreenFragment() : Fragment() {
     var binding:FragmentGreenBinding?=null
@@ -43,16 +44,15 @@ class GreenFragment() : Fragment() {
         binding!!.apply {
             backimg.setBackgroundResource(backimgindex)
         }
+        val getTime=getdate()
+        val timearr=getTime.split(",")
+        var mon = timearr[1]
+        var date=timearr[2]
+        var hour=timearr[3]
+        var min=timearr[4]
+        var sec=timearr[5]
 
-        var now = LocalDateTime.now()
-        var mon = now.monthValue
-        var date=now.dayOfMonth
-        var hour=now.hour
-        var min=now.minute
-        var sec=now.second
-        Log.i("date",mon.toString()+date.toString()+hour.toString()+min.toString()+sec.toString())
-
-        if(date==1&&hour==0&&min==0&&sec==0){
+        if(date=="01"&&hour=="00"&&min=="00"&&sec=="00"){
             //달이 바뀌면 꽃 초기화
             for(i in 0..30){
                 flowerArray[i]=0
@@ -61,25 +61,28 @@ class GreenFragment() : Fragment() {
         }
 
         //오늘 달성률 100%라면
-        if(date!=31){
+        if(date!="31"){
+            Log.i("green date",date)
+            isComplete=(activity as MainActivity).getComplete()
             if(isComplete){
-                flowerArray[date]=1
+                flowerArray[date.toInt()]=1
                 flowersum++
             }
             else{
-                flowerArray[date]=0
+                flowerArray[date.toInt()]=0
                 flowersum--
             }
         }
 
         //2월이나 31일이 있는 달인 경우
-        if(mon==2&&date==28&&flowersum==28){
+        if(mon=="02"&&date=="28"&&flowersum==28){
             flowerArray[29]=1
             flowerArray[30]=1
         }
 
 
         for(i in 0 until flowerArray.size){
+            Log.i("flower",flowerArray[i].toString())
             val f= requireActivity().findViewById<ImageView>(flowers[i])
             if(flowerArray[i]==1){
                 f.visibility=View.VISIBLE
@@ -88,6 +91,14 @@ class GreenFragment() : Fragment() {
                 f.visibility=View.INVISIBLE
             }
         }
+    }
+
+    private fun getdate() : String{
+        val now : Long = System.currentTimeMillis()
+        val mdate : Date = Date(now)
+        val simpelDate : SimpleDateFormat = SimpleDateFormat("yyyy,MM,dd,HH,mm,ss", Locale.KOREA)
+        val getTime : String = simpelDate.format(mdate)
+        return getTime
     }
 
     override fun onDestroy() {

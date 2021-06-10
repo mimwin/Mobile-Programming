@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -31,6 +32,9 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
     lateinit var firebaseUser : FirebaseUser
     lateinit var todayrate : TextView
 
+    lateinit var year:TextView
+    lateinit var date:TextView
+    lateinit var today:String
     var backimg=0
     var tyear=y
     var tmonth=m
@@ -38,7 +42,7 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        refreshFragment(this, requireFragmentManager())
+        refreshFragment(this, parentFragmentManager)
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
@@ -53,13 +57,14 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
         val calendarBtn = view.findViewById<ImageButton>(R.id.calendarBtn)
         val todobackimg=view.findViewById<ImageView>(R.id.todobackimg)
         todayrate=view.findViewById<TextView>(R.id.todayrate)
-        var year = view.findViewById<TextView>(R.id.year)
-        var date = view.findViewById<TextView>(R.id.date)
+        year = view.findViewById<TextView>(R.id.year)
+        date = view.findViewById<TextView>(R.id.date)
 
         var now = LocalDate.now()
         var yearnow = now.format(DateTimeFormatter.ofPattern("yyyy년"))
         var datenow = now.format(DateTimeFormatter.ofPattern("MM월 dd일"))
-
+        //today=yearnow.toString().substring(0,4)+"-"+datenow.toString().substring(0,3)+"-"+datenow.toString().substring(4,6)
+        today="2021-06-09"
         if(tyear==0){
             year.text = yearnow.toString()
             date.text = datenow.toString()
@@ -94,7 +99,35 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
             TodayRate2("2021-06-09")
             adapter.itemClickListener = object : TodoAdapter.OnItemClickListener {
                 override fun onItemClick(view: View, position: Int) {
-                    //투두 클릭시 update 화면으로 이동
+                    (activity as MainActivity).replaceFragment(TodoCalendarFragment(),"todoadd")
+                }
+
+                override fun onCheckClick(holder:TodoAdapter.ViewHolder, view: View, position: Int) {
+                    Log.i("todotodo",holder.binding.todo.toString() )
+                    if(view.isSelected){
+                        view.isSelected = false
+                        databaseref.child("UserAccount")
+                            .child(firebaseUser.uid.toString())
+                            .child("todo")
+                            .child(holder.binding.todo.text.toString())
+                            .child("checked")
+                            .setValue(false)
+                        IncreaseTrue(false)
+                        Toast.makeText(requireContext(), "취소", Toast.LENGTH_SHORT).show()
+
+                    }else{
+                        view.isSelected = true
+                        databaseref.child("UserAccount")
+                            .child(firebaseUser.uid.toString())
+                            .child("todo")
+                            .child(holder.binding.todo.text.toString())
+                            .child("checked")
+                            .setValue(true)
+                        IncreaseTrue(true)
+                        Toast.makeText(requireContext(), "완료", Toast.LENGTH_SHORT).show()
+                    }
+                    val getdate=year.text.substring(0,5)+"-"+date.text.substring(0,3)+"-"+date.text.substring(4,6)
+                    TodayRate2("2021-06-09")
                 }
             }
 
@@ -130,10 +163,6 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
             adapter.notifyDataSetChanged()
 
             addBtn.setOnClickListener {
-                activity?.supportFragmentManager?.beginTransaction()
-                    ?.replace(R.id.fragment, TodoAddFragment())
-                    ?.addToBackStack(null)
-                    ?.commit()
                 (activity as MainActivity).replaceFragment(TodoAddFragment(),"todoadd")
             }
 
@@ -142,15 +171,11 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
             todobackimg.alpha = 0.7f
 
             calendarBtn.setOnClickListener {
-                activity?.supportFragmentManager?.beginTransaction()
-                    ?.replace(R.id.fragment, TodoCalendarFragment())
-                    ?.addToBackStack("cal")
-                    ?.commit()
                 (activity as MainActivity).replaceFragment(TodoCalendarFragment(),"todocal")
             }
         }
         // Fragment 클래스에서 사용 시
-        refreshFragment(this, requireFragmentManager())
+        refreshFragment(this, parentFragmentManager)
         return view
     }
 
@@ -178,6 +203,12 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
 
                 todayrate.text= "오늘의 달성률 : ${rateInt.toString()}"
                 Log.e("LISTENER - INSIDE","${count.toString()} $truecount  $rate")
+                if(rate==100.0&&date==today){
+                    (activity as MainActivity).setComplete(true)
+                }
+                if(rate!=100.0&&date==today){
+                    (activity as MainActivity).setComplete(false)
+                }
             }
             override fun onCancelled(error: DatabaseError) {
             }
@@ -193,6 +224,44 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
 
         Log.e("LISTENER - OUTSIDE","${count.toString()} $truecount")
         return rate
+    }
+
+    fun IncreaseTrue(f : Boolean){
+        databaseref.child("UserAccount")
+            .child(firebaseUser.uid.toString()).get().addOnSuccessListener { it ->
+                var count = it.child("trueCount").value as Long
+
+                if(f){
+                    val TodoAddFragment : TodoAddFragment = TodoAddFragment()
+                    TodoAddFragment.trueflag = true
+
+                    count++
+
+                    databaseref.child("UserAccount")
+                        .child(firebaseUser.uid.toString())
+                        .child("trueCount")
+                        .setValue(count)
+                }
+                else if(!f){
+                    count--
+                    databaseref.child("UserAccount")
+                        .child(firebaseUser.uid.toString())
+                        .child("trueCount")
+                        .setValue(count)
+                }
+
+                val allcount : Long = it.child("allCount").value as Long
+
+                //리더보드 갱신
+                databaseref.child("Leaderboard").child(firebaseUser.uid.toString()).get().addOnSuccessListener { it2 ->
+                    databaseref.child("Leaderboard").child(firebaseUser.uid.toString())
+                        .child("useraccount").child("trueCount").setValue(count)
+
+                    val rate: Double = kotlin.math.round(count / (allcount.toDouble()) * 100.0)
+                    Log.e("INC TRUE - LEADER BOARD", "${count}  ${allcount}  $rate")
+                    databaseref.child("Leaderboard").child(firebaseUser.uid.toString()).child("rate").setValue(rate)
+                }
+            }
     }
 
     fun IncreaseCount(f : Boolean) {

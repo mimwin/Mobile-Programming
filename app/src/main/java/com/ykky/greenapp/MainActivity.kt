@@ -32,6 +32,9 @@ class MainActivity : AppCompatActivity() {
     fun setComplete(t:Boolean){
         isCompleted=t
     }
+    fun getComplete():Boolean{
+        return isCompleted
+    }
 
     private fun init() {
 

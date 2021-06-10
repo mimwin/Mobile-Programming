@@ -80,6 +80,7 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
             date.text = "${tmonth}월 ${tday}일"
         }
 
+        today = "$tyear-$tmonth-$tday"
         view.apply {
 
             var count = 0L
@@ -144,7 +145,7 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                         Toast.makeText(requireContext(), "완료", Toast.LENGTH_SHORT).show()
                     }
                     val getdate=year.text.substring(0,5)+"-"+date.text.substring(0,3)+"-"+date.text.substring(4,6)
-                    TodayRate2("2021-06-09")
+                    TodayRate2("$tyear-$tmonth-$tday")
                 }
             }
 

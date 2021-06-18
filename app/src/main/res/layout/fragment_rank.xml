@@ -55,12 +55,13 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/firstimg"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:src="@drawable/one"
                 android:adjustViewBounds="true"
-                android:scaleType="fitXY" />
+                android:scaleType="fitXY"/>
 
             <TextView
                 android:id="@+id/first"
@@ -89,6 +90,7 @@
             android:gravity="center"
             android:orientation="horizontal">
             <ImageView
+                android:id="@+id/secondimg"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -124,6 +126,7 @@
             android:gravity="center"
             android:orientation="horizontal">
             <ImageView
+                android:id="@+id/thirdimg"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -159,6 +162,7 @@
             android:gravity="center"
             android:orientation="horizontal">
             <ImageView
+                android:id="@+id/fourthimg"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -194,6 +198,7 @@
             android:gravity="center"
             android:orientation="horizontal">
             <ImageView
+                android:id="@+id/fifthimg"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

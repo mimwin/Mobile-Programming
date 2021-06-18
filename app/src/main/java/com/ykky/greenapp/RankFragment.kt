@@ -1,10 +1,12 @@
 package com.ykky.greenapp
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
@@ -62,6 +64,16 @@ class RankFragment : Fragment() {
         myusedday = view.findViewById(R.id.myusedday)
         myrelative = view.findViewById(R.id.myrelative)
         yourrank = view.findViewById(R.id.yourrank)
+        val firstimage = view.findViewById<ImageView>(R.id.firstimg)
+        val secondimage = view.findViewById<ImageView>(R.id.secondimg)
+        val thirdimage = view.findViewById<ImageView>(R.id.thirdimg)
+        val fourthimage = view.findViewById<ImageView>(R.id.fourthimg)
+        val fifthimage = view.findViewById<ImageView>(R.id.fifthimg)
+        firstimage.setColorFilter(Color.parseColor("#FF0000"))
+        secondimage.setColorFilter(Color.parseColor("#FF7F00"))
+        thirdimage.setColorFilter(Color.parseColor("#FFD400"))
+        fourthimage.setColorFilter(Color.parseColor("#008000"))
+        fifthimage.setColorFilter(Color.parseColor("#000080"))
 
         init()
         return view

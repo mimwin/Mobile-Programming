@@ -60,12 +60,12 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
         year = view.findViewById<TextView>(R.id.year)
         date = view.findViewById<TextView>(R.id.date)
 
-        var now = LocalDate.now()
-        var yearnow = now.format(DateTimeFormatter.ofPattern("yyyy년"))
-        var datenow = now.format(DateTimeFormatter.ofPattern("MM월 dd일"))
-        var nyear = now.format(DateTimeFormatter.ofPattern("yyyy"))
-        var nmonth = now.format(DateTimeFormatter.ofPattern("MM"))
-        var ndate = now.format(DateTimeFormatter.ofPattern("dd"))
+        val now = LocalDate.now()
+        val yearnow = now.format(DateTimeFormatter.ofPattern("yyyy년"))
+        val datenow = now.format(DateTimeFormatter.ofPattern("MM월 dd일"))
+        val nyear = now.format(DateTimeFormatter.ofPattern("yyyy"))
+        val nmonth = now.format(DateTimeFormatter.ofPattern("MM"))
+        val ndate = now.format(DateTimeFormatter.ofPattern("dd"))
 
 
         if(tyear==0){
@@ -80,7 +80,7 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
             date.text = "${tmonth}월 ${tday}일"
         }
 
-        today = "$tyear-$tmonth-$tday"
+        today = "${nyear.toInt()}-${nmonth.toInt()}-${ndate.toInt()}"
         view.apply {
 
             var count = 0L
@@ -89,8 +89,6 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
             firebaseauth = FirebaseAuth.getInstance()
             databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")
             firebaseUser= firebaseauth.currentUser!!
-
-            //TodayRate2("2021-06-09")
 
             //해당날짜 투두 가져와서 recyclerView에 출력
             val query = databaseref.child("UserAccount")
@@ -103,7 +101,7 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                     .setQuery(query, TodoData::class.java)
                     .build()
             adapter = TodoAdapter(option)
-            //TodayRate2("2021-06-09")
+
             adapter.itemClickListener = object : TodoAdapter.OnItemClickListener {
                 override fun onItemClick(view: View, position: Int) {
                     val bundle = Bundle()
@@ -132,7 +130,6 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                             .setValue(false)
                         IncreaseTrue(false)
                         Toast.makeText(requireContext(), "취소", Toast.LENGTH_SHORT).show()
-
                     }else{
                         view.isSelected = true
                         databaseref.child("UserAccount")
@@ -161,6 +158,9 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     val position = viewHolder.adapterPosition
                     val item = adapter.getItem(position)
+                    if(item.isChecked){
+                        IncreaseTrue(false)
+                    }
                     databaseref.child("UserAccount")
                             .child(firebaseUser.uid.toString())
                             .child("todo")
@@ -226,7 +226,13 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                 rate = ((truecount/(count)) * 100)
                 val rateInt : Int = round(rate).toInt()
 
-                todayrate.text= "오늘의 달성률 : ${rateInt.toString()}"
+                if(date!=today){
+                    todayrate.text= ""
+                } else if(date==today){
+                    todayrate.text= "오늘의 달성률 : ${rateInt.toString()}"
+                }
+                //todayrate.text= "오늘의 달성률 : ${rateInt.toString()}"
+
                 Log.e("LISTENER - INSIDE","${count.toString()} $truecount  $rate")
                 if(rate==100.0&&date==today){
                     (activity as MainActivity).setComplete(true)

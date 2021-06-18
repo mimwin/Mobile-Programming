@@ -1,5 +1,6 @@
 package com.ykky.greenapp
 
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -51,9 +52,11 @@ class TodoAdapter(val options: FirebaseRecyclerOptions<TodoData>)
 
         if(model.isChecked) {
             holder.binding.checkBtn.isSelected=true
+            holder.binding.row.setBackgroundColor(Color.parseColor("#75EFFF"))
         }
         else{
             holder.binding.checkBtn.isSelected=false
+            holder.binding.row.setBackgroundColor(Color.parseColor("#FFFFFFFF"))
         }
         holder.binding.todo.text=model.todo.toString()
 

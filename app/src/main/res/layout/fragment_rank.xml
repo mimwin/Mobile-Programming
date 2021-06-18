@@ -42,7 +42,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="10등"
+                android:text="@null"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
                 android:gravity="center"
-                android:text="UserName1"
+                android:text="@null"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="92%"
+                android:text="@null"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -104,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
                 android:gravity="center"
-                android:text="UserName2"
+                android:text="@null"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -114,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="90%"
+                android:text="@null"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -140,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
                 android:gravity="center"
-                android:text="UserName3"
+                android:text="@null"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -150,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="87%"
+                android:text="@null"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -176,7 +176,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
                 android:gravity="center"
-                android:text="UserName4"
+                android:text="@null"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -186,7 +186,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="85%"
+                android:text="@null"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -212,7 +212,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
                 android:gravity="center"
-                android:text="UserName5"
+                android:text="@null"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -222,7 +222,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="82%"
+                android:text="@null"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -240,7 +240,7 @@
 
             <TextView
                 android:id="@+id/mypercent"
-                android:text="000님의 달성률 확인"
+                android:text="님의 달성률 확인"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
         </TableRow>
@@ -276,21 +276,21 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="30"
+                android:text=" "
                 android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/mycompletedtodo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="26"
+                android:text=" "
                 android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/myusedday"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="62"
+                android:text=" "
                 android:textColor="@color/black"/>
         </TableRow>
 
@@ -299,7 +299,7 @@
             android:padding="5dp">
             <TextView
                 android:id="@+id/myrelative"
-                android:text="당신은 40%의 유저보다 더 열심히 살고 있습니다!"
+                android:text="당신은 0%의 유저보다 더 열심히 살고 있습니다!"
                 android:textColor="@color/black"/>
         </TableRow>
     </TableLayout>

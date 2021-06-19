@@ -110,7 +110,13 @@ class RankFragment : Fragment() {
             val countlistener: ValueEventListener = object : ValueEventListener {
                 var c = 0
                 override fun onDataChange(snapshot: DataSnapshot) {
+
+                    val cnt = snapshot.childrenCount
+                    if(cnt<5){
+                        c = (5-cnt+1).toInt()
+                    }
                     for (item in snapshot.children) {
+
                         c++
                         if (c == 5) {
                             first.text =

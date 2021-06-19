@@ -58,6 +58,8 @@ class RegisterActivity : AppCompatActivity() {
 
                             //setvalue = insert
                             databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).setValue(useraccount)
+                            databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).child("isDrawable").setValue(true)
+                            databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).child("Image").setValue(0)
 
                             val userleader = LeaderboardData(0.0,useraccount)
 
@@ -67,8 +69,6 @@ class RegisterActivity : AppCompatActivity() {
                                     databaseref.child("Leaderboard").child(firebaseUser?.uid.toString()).setValue(userleader)
                                 }
                             }
-
-
                             Toast.makeText(this@RegisterActivity,"회원가입 성공",Toast.LENGTH_SHORT).show()
 
                             finish()
@@ -84,13 +84,8 @@ class RegisterActivity : AppCompatActivity() {
                 else{
                     // 비밀번호 != 비밀번호확인 인 경우
                     Toast.makeText(this@RegisterActivity,"비밀번호가 같지 않습니다.",Toast.LENGTH_SHORT).show()
-
-                    //데이터베이스에서 중복 확인하여 중복되면 중복 toast 띄우기 ( 회원가입 실패 이유 )
-
                 }
-
             }
-
         }
     }
 

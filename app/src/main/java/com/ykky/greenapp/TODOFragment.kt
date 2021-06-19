@@ -1,4 +1,5 @@
 package com.ykky.greenapp
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -20,12 +21,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import java.io.File
 import java.lang.Math.round
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
 class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
+
+    var backimgArray=arrayOf(R.drawable.ocean, R.drawable.night, R.drawable.forest, R.drawable.whitesea, R.drawable.sunocean, R.drawable.nightstar)
     lateinit var firebaseauth : FirebaseAuth    // 파이어베이스 인증객체
     lateinit var databaseref : DatabaseReference    // 실시간 데이터베이스
     lateinit var adapter: TodoAdapter
@@ -193,12 +197,34 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                 (activity as MainActivity).replaceFragment(Addfragment,"todoadd")
             }
 
-            backimg = (activity as MainActivity).getBackImg()
-            if(backimg==-1){
-                val bitmap = (activity as MainActivity).backBitmap
-                todobackimg.setImageBitmap(bitmap)
-            }
-            else todobackimg.setBackgroundResource(backimg)
+//            backimg = (activity as MainActivity).getBackImg()
+//            if(backimg==-1){
+//                val bitmap = (activity as MainActivity).backBitmap
+//                todobackimg.setImageBitmap(bitmap)
+//            }
+//            else todobackimg.setBackgroundResource(backimg)
+
+            databaseref.child("UserAccount")
+                    .child(firebaseUser.uid.toString()).get().addOnSuccessListener {
+
+                        val isdrawable = it.child("isDrawable").value.toString().toBoolean()
+                        Log.e("isdrawable", isdrawable.toString())
+                        if(isdrawable){
+                            val i = it.child("Image").value.toString().toInt()
+                            Log.e("Image", i.toString())
+                            todobackimg.setBackgroundResource(backimgArray[i])
+                        }
+                        else{
+                            val path = it.child("Image").value.toString()
+                            Log.e("path",path.toString())
+                            val imgFile = File("content://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2Felmo.jpeg")
+                            if (imgFile.exists()) {
+                                val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+                                todobackimg.setImageBitmap(myBitmap)
+                            }
+                        }
+                    }
+
             todobackimg.alpha = 0.7f
 
             calendarBtn.setOnClickListener {

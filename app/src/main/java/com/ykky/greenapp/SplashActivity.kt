@@ -12,7 +12,7 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash2)
+        setContentView(R.layout.activity_splash)
 
         var actionBar : ActionBar? = supportActionBar
         actionBar?.hide()

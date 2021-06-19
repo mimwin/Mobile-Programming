@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FDEEE9"
+    android:background="#EFE9B1"
     tools:context=".SplashActivity">
 
     <ImageView
@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="10dp"
-        android:text="시간이 금이다"
+        android:text="Team 시간이 금이다"
         android:textSize="15dp" />
 
 

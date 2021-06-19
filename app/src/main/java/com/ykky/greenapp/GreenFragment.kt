@@ -1,4 +1,6 @@
 package com.ykky.greenapp
+
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -6,25 +8,39 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.ykky.greenapp.databinding.FragmentGreenBinding
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class GreenFragment() : Fragment() {
+
+    lateinit var firebaseauth: FirebaseAuth    // 파이어베이스 인증객체
+    lateinit var databaseref: DatabaseReference    // 실시간 데이터베이스
+    lateinit var firebaseUser: FirebaseUser
+
     var binding:FragmentGreenBinding?=null
-    val flowerArray= mutableListOf<Int>(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
-    val flowers=arrayOf(R.id.flower1,R.id.flower2,R.id.flower3,R.id.flower4,R.id.flower5,
-        R.id.flower6,R.id.flower7,R.id.flower8,R.id.flower9,R.id.flower10,
-        R.id.flower11,R.id.flower12,R.id.flower13,R.id.flower14,R.id.flower15,
-        R.id.flower16,R.id.flower17,R.id.flower18,R.id.flower19,R.id.flower20,
-        R.id.flower21,R.id.flower22,R.id.flower23,R.id.flower24,R.id.flower25,
-        R.id.flower26,R.id.flower27,R.id.flower28,R.id.flower29,R.id.flower30)
+    var backimgArray=arrayOf(R.drawable.ocean, R.drawable.night, R.drawable.forest, R.drawable.whitesea, R.drawable.sunocean, R.drawable.nightstar)
+    val flowerArray= mutableListOf<Int>(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    val flowers=arrayOf(R.id.flower1, R.id.flower2, R.id.flower3, R.id.flower4, R.id.flower5,
+            R.id.flower6, R.id.flower7, R.id.flower8, R.id.flower9, R.id.flower10,
+            R.id.flower11, R.id.flower12, R.id.flower13, R.id.flower14, R.id.flower15,
+            R.id.flower16, R.id.flower17, R.id.flower18, R.id.flower19, R.id.flower20,
+            R.id.flower21, R.id.flower22, R.id.flower23, R.id.flower24, R.id.flower25,
+            R.id.flower26, R.id.flower27, R.id.flower28, R.id.flower29, R.id.flower30)
     var isComplete=false
     var flowersum=0
 
+
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         binding= FragmentGreenBinding.inflate(layoutInflater)
@@ -38,17 +54,37 @@ class GreenFragment() : Fragment() {
     }
 
     private fun init() {
+
+        firebaseauth = FirebaseAuth.getInstance()
+        databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")
+        firebaseUser = firebaseauth.currentUser!!
+
         (activity as MainActivity).changeBack() //배경화면 변경해서 새싹화면으로 돌아온 경우
 
-        val backimgindex=(activity as MainActivity).getBackImg()
+//        val backimgindex=(activity as MainActivity).getBackImg()
 
         binding!!.apply {
 
-            if(backimgindex==-1){
-                val bitmap = (activity as MainActivity).backBitmap
-                backimg.setImageBitmap(bitmap)
+            databaseref.child("UserAccount")
+                    .child(firebaseUser.uid.toString()).get().addOnSuccessListener {
+
+                val isdrawable = it.child("isDrawable").value.toString().toBoolean()
+                Log.e("isdrawable", isdrawable.toString())
+                if(isdrawable){
+                    val i = it.child("Image").value.toString().toInt()
+                    Log.e("Image", i.toString())
+                    backimg.setBackgroundResource(backimgArray[i])
+                }
+                else{
+                    val path = it.child("Image").value.toString()
+                    Log.e("path",path.toString())
+                    val imgFile = File("content://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2Felmo.jpeg")
+                    if (imgFile.exists()) {
+                        val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+                        backimg.setImageBitmap(myBitmap)
+                    }
+                }
             }
-            else backimg.setBackgroundResource(backimgindex)
         }
         val getTime=getdate()
         val timearr=getTime.split(",")
@@ -68,7 +104,7 @@ class GreenFragment() : Fragment() {
 
         //오늘 달성률 100%라면
         if(date!="31"){
-            Log.i("green date",date)
+            Log.i("green date", date)
             isComplete=(activity as MainActivity).getComplete()
             if(isComplete){
                 flowerArray[date.toInt()]=1
@@ -88,7 +124,7 @@ class GreenFragment() : Fragment() {
 
 
         for(i in 0 until flowerArray.size){
-            Log.i("flower",flowerArray[i].toString())
+            Log.i("flower", flowerArray[i].toString())
             val f= requireActivity().findViewById<ImageView>(flowers[i])
             if(flowerArray[i]==1){
                 f.visibility=View.VISIBLE

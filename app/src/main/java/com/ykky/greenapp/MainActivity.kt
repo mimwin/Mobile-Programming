@@ -1,6 +1,5 @@
 package com.ykky.greenapp
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -11,8 +10,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityMainBinding
     lateinit var nav:BottomNavigationView
-    var backimgArray=arrayOf(R.drawable.ocean,R.drawable.night,R.drawable.forest,R.drawable.whitesea,R.drawable.sunocean,R.drawable.nightstar)
-    lateinit var backBitmap : Bitmap
+
     var backimgindex=0
     var isCompleted=false
 
@@ -23,12 +21,9 @@ class MainActivity : AppCompatActivity() {
         init()
     }
 
-    fun getBackImg():Int{
-        if(backimgindex==6){
-            return -1
-        }
-        else return backimgArray[backimgindex]
-    }
+//    fun getBackImg():Int{
+//        else return backimgArray[backimgindex]
+//    }
 
     fun setBackImg(i:Int){
         backimgindex=i
@@ -89,5 +84,4 @@ class MainActivity : AppCompatActivity() {
             nav.getMenu().findItem(R.id.navgreen).isChecked=true
         }
     }
-
 }

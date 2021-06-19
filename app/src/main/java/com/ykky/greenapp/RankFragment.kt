@@ -103,7 +103,6 @@ class RankFragment : Fragment() {
                         databaseref.child("Leaderboard").child(uid).child("useraccount")
                             .child("trueCount").setValue(0)
                     }
-
             }
         }
 

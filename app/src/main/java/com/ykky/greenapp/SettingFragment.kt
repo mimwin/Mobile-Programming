@@ -3,8 +3,11 @@ package com.ykky.greenapp
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.graphics.BitmapFactory
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +22,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.ykky.greenapp.databinding.FragmentSettingBinding
 import com.ykky.greenapp.databinding.MypageditBinding
+import java.io.File
 import java.io.InputStream
 
 
@@ -63,6 +67,7 @@ class SettingFragment : Fragment() {
                 emailId=it.child("emailId").value.toString()
                 password=it.child("password").value.toString()
                 nickname=it.child("nickname").value.toString()
+
 
                 binding?.apply {
                     myid.text="아이디 : $emailId"
@@ -151,26 +156,39 @@ class SettingFragment : Fragment() {
             //imagview clicklistener
             backimg1.setOnClickListener {
                 (activity as MainActivity).setBackImg(0)
+                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(true)
+                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(0)
                 (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
             backimg2.setOnClickListener {
                 (activity as MainActivity).setBackImg(1)
+                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(true)
+                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(1)
                 (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
             backimg3.setOnClickListener {
                 (activity as MainActivity).setBackImg(2)
+                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(true)
+                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(2)
                 (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
             backimg4.setOnClickListener {
                 (activity as MainActivity).setBackImg(3)
+                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(true)
+                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(3)
+
                 (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
             backimg5.setOnClickListener {
                 (activity as MainActivity).setBackImg(4)
+                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(true)
+                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(4)
                 (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
             backimg6.setOnClickListener {
                 (activity as MainActivity).setBackImg(5)
+                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(true)
+                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(5)
                 (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
 
@@ -215,19 +233,21 @@ class SettingFragment : Fragment() {
         super.onDestroy()
         binding=null
     }
+    lateinit var uri : Uri
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 100) {
             if (resultCode == RESULT_OK) {
                 try {
-                    val `in`: InputStream = activity?.contentResolver?.openInputStream(data?.data!!)!!
-                    val img = BitmapFactory.decodeStream(`in`)
-                    `in`.close()
-
-                    (activity as MainActivity).setBackImg(6)
-                    (activity as MainActivity).backBitmap = img
+                    uri = data?.data!!
+                    val `in`: InputStream = activity?.contentResolver?.openInputStream(uri)!!
+//                    val img = BitmapFactory.decodeStream(`in`)
+//                    `in`.close()
+                    databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(false)
+                    val path = absolutelyPath(uri)
+                    Log.e("Settingpath", path)
+                    databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(path)
                     (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
-
                 } catch (e: Exception) {
                 }
             } else if (resultCode == RESULT_CANCELED) {
@@ -235,8 +255,32 @@ class SettingFragment : Fragment() {
             }
         }
     }
+    fun getRealPathFromURI(contentUri: Uri): String {
 
 
+        val proj = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor: Cursor = activity?.contentResolver?.query(contentUri, proj, null, null, null)!!
+        cursor.moveToNext()
+
+        val path: String = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA))
+        val uri = Uri.fromFile(File(path))
+        cursor.close()
+
+        return path
+    }
+
+    // 절대경로 변환
+    fun absolutelyPath(path: Uri): String {
+        Log.e("Settingpath", "firsthi")
+        var proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
+        var c: Cursor = activity?.contentResolver?.query(path, proj, null, null, null)!!
+        var index = c.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        Log.e("Settingpath", index.toString())
+        c.moveToFirst()
+        var result = c.getString(index)
+        Log.e("Settingpath", result)
+        return result
+    }
 }
 
 

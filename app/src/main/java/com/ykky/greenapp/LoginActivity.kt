@@ -39,19 +39,23 @@ class LoginActivity : AppCompatActivity() {
             }
 
             btnLogin.setOnClickListener {
-                //로그인 요청
-                firebaseauth.signInWithEmailAndPassword(etEmail.text.toString(),etPwd.text.toString()).addOnCompleteListener {
-                    task->
-                    if(task.isSuccessful){
-                        //로그인 성공
-                        Toast.makeText(this@LoginActivity,"로그인 성공",Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this@LoginActivity,MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                if(etEmail.text.isBlank()||etPwd.text.isBlank()){
+                    Toast.makeText(this@LoginActivity,"아이디, 비밀번호를 입력하세요.",Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    //로그인 요청
+                    firebaseauth.signInWithEmailAndPassword(etEmail.text.toString(),etPwd.text.toString()).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            //로그인 성공
+                            Toast.makeText(this@LoginActivity, "로그인 성공", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
 
-                    }else{
-                        //로그인 실패
-                        Toast.makeText(this@LoginActivity,"로그인 실패",Toast.LENGTH_SHORT).show()
+                        } else {
+                            //로그인 실패
+                            Toast.makeText(this@LoginActivity, "로그인 실패", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }

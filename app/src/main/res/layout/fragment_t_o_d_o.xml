@@ -52,6 +52,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_weight="0"
+                android:backgroundTint="@color/primary1"
                 android:src="@android:drawable/ic_menu_my_calendar" />
 
         </LinearLayout>

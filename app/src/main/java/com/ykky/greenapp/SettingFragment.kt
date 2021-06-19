@@ -74,6 +74,12 @@ class SettingFragment : Fragment() {
             mypagedelete.setOnClickListener {
                 AlertDelete()
             }
+            mypagelogout.setOnClickListener {
+                //로그인 화면으로 돌아가기
+                val intent= Intent(requireActivity(),LoginActivity::class.java)
+                startActivity(intent)
+                requireActivity().finish()
+            }
         }
     }
 

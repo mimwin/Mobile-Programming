@@ -41,8 +41,14 @@ class GreenFragment() : Fragment() {
         (activity as MainActivity).changeBack() //배경화면 변경해서 새싹화면으로 돌아온 경우
 
         val backimgindex=(activity as MainActivity).getBackImg()
+
         binding!!.apply {
-            backimg.setBackgroundResource(backimgindex)
+
+            if(backimgindex==-1){
+                val bitmap = (activity as MainActivity).backBitmap
+                backimg.setImageBitmap(bitmap)
+            }
+            else backimg.setBackgroundResource(backimgindex)
         }
         val getTime=getdate()
         val timearr=getTime.split(",")

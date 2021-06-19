@@ -1,5 +1,9 @@
 package com.ykky.greenapp
+
+import android.app.Activity.RESULT_CANCELED
+import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +19,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.ykky.greenapp.databinding.FragmentSettingBinding
 import com.ykky.greenapp.databinding.MypageditBinding
+import java.io.InputStream
+
 
 class SettingFragment : Fragment() {
 
@@ -31,11 +37,11 @@ class SettingFragment : Fragment() {
     var nickname=""
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding= FragmentSettingBinding.inflate(layoutInflater,container, false)
+        binding= FragmentSettingBinding.inflate(layoutInflater, container, false)
         return binding!!.root
     }
 
@@ -68,7 +74,7 @@ class SettingFragment : Fragment() {
 
         binding!!.apply{
             mypageeidt.setOnClickListener {
-                val data=arrayOf(emailId,password,nickname)
+                val data=arrayOf(emailId, password, nickname)
                 AlertEdit(data)
             }
             mypagedelete.setOnClickListener {
@@ -84,7 +90,7 @@ class SettingFragment : Fragment() {
     }
 
     //데이터 수정 알림창
-    private fun AlertEdit(data:Array<String>) {
+    private fun AlertEdit(data: Array<String>) {
         val dlgBinding= MypageditBinding.inflate(layoutInflater)
         dlgBinding.id.text=data[0]
         dlgBinding.editpassword.setText(data[1])
@@ -94,8 +100,7 @@ class SettingFragment : Fragment() {
         val builder= AlertDialog.Builder(requireContext())
         builder.setView(dlgBinding.root)
             .setTitle("마이 페이지 수정하기")
-            .setPositiveButton("네"){
-                    _,_ ->
+            .setPositiveButton("네"){ _, _ ->
                 val newpassword=dlgBinding.editpassword.text.toString()
                 data[1]=newpassword
                 val newnickname=dlgBinding.editnickaname.text.toString()
@@ -104,7 +109,7 @@ class SettingFragment : Fragment() {
                 databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).child("password").setValue(newpassword)
                 databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).child("nickname").setValue(newnickname)
 
-                Toast.makeText(requireContext(),"마이 페이지 수정 완료",Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "마이 페이지 수정 완료", Toast.LENGTH_SHORT).show()
 
                 //마이 페이지에 변경된 부분 반영
                 binding!!.mypassword.text="비밀번호 : ${data[1]}"
@@ -113,8 +118,7 @@ class SettingFragment : Fragment() {
                 nickname=data[2]
 
             }
-            .setNegativeButton("아니오"){
-                    _,_ ->
+            .setNegativeButton("아니오"){ _, _ ->
             }
         val dlg=builder.create()
         dlg.show()
@@ -124,21 +128,19 @@ class SettingFragment : Fragment() {
     private fun AlertDelete() {
         val builder= AlertDialog.Builder(requireContext())
         builder.setMessage("해당 계정을 삭제하시겠습니까? \n계정 삭제시 모든 TODO가 사라집니다.")
-            .setPositiveButton("네"){
-                    _,_ ->
+            .setPositiveButton("네"){ _, _ ->
                 //데이터베이스에서 삭제하기
                 databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).removeValue()
                 firebaseUser.delete()
 
-                Toast.makeText(requireContext(),"계정 삭제 완료",Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "계정 삭제 완료", Toast.LENGTH_SHORT).show()
 
                 //로그인 화면으로 돌아가기
-                val intent= Intent(requireActivity(),LoginActivity::class.java)
+                val intent= Intent(requireActivity(), LoginActivity::class.java)
                 startActivity(intent)
                 requireActivity().finish()
             }
-            .setNegativeButton("아니오"){
-                    _,_ ->
+            .setNegativeButton("아니오"){ _, _ ->
             }
         val dlg=builder.create()
         dlg.show()
@@ -149,27 +151,27 @@ class SettingFragment : Fragment() {
             //imagview clicklistener
             backimg1.setOnClickListener {
                 (activity as MainActivity).setBackImg(0)
-                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
+                (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
             backimg2.setOnClickListener {
                 (activity as MainActivity).setBackImg(1)
-                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
+                (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
             backimg3.setOnClickListener {
                 (activity as MainActivity).setBackImg(2)
-                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
+                (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
             backimg4.setOnClickListener {
                 (activity as MainActivity).setBackImg(3)
-                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
+                (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
             backimg5.setOnClickListener {
                 (activity as MainActivity).setBackImg(4)
-                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
+                (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
             backimg6.setOnClickListener {
                 (activity as MainActivity).setBackImg(5)
-                (activity as MainActivity).replaceFragment(GreenFragment(),"navgreen")
+                (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
 
             mypagedown.setOnClickListener {
@@ -200,6 +202,12 @@ class SettingFragment : Fragment() {
                 }
             }
 
+            plusbtn.setOnClickListener {
+                val intent = Intent()
+                intent.type = "image/*"
+                intent.action = Intent.ACTION_GET_CONTENT
+                startActivityForResult(intent, 100)
+            }
         }
     }
 
@@ -208,4 +216,28 @@ class SettingFragment : Fragment() {
         binding=null
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 100) {
+            if (resultCode == RESULT_OK) {
+                try {
+                    val `in`: InputStream = activity?.contentResolver?.openInputStream(data?.data!!)!!
+                    val img = BitmapFactory.decodeStream(`in`)
+                    `in`.close()
+
+                    (activity as MainActivity).setBackImg(6)
+                    (activity as MainActivity).backBitmap = img
+                    (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
+
+                } catch (e: Exception) {
+                }
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(context, "사진 선택 취소", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+
 }
+
+
+

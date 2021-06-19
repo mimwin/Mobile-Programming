@@ -194,7 +194,11 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
             }
 
             backimg = (activity as MainActivity).getBackImg()
-            todobackimg.setBackgroundResource(backimg)
+            if(backimg==-1){
+                val bitmap = (activity as MainActivity).backBitmap
+                todobackimg.setImageBitmap(bitmap)
+            }
+            else todobackimg.setBackgroundResource(backimg)
             todobackimg.alpha = 0.7f
 
             calendarBtn.setOnClickListener {

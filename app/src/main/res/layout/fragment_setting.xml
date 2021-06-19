@@ -143,6 +143,15 @@
                         android:textStyle="bold" />
 
                     <ImageButton
+                        android:id="@+id/plusbtn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/black"
+                        android:src="@drawable/ic_baseline_add_circle_outline_24"
+                        android:tint="#FFFFFF" />
+
+                    <ImageButton
                         android:id="@+id/changebackgrounddown"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -166,9 +175,9 @@
                         android:layout_rowWeight="1"
                         android:layout_columnWeight="1"
                         android:layout_margin="5dp"
-                        android:src="@drawable/field"
                         android:adjustViewBounds="true"
-                        android:scaleType="fitXY"/>
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ocean" />
 
                     <ImageView
                         android:id="@+id/backimg2"
@@ -177,9 +186,9 @@
                         android:layout_rowWeight="1"
                         android:layout_columnWeight="1"
                         android:layout_margin="5dp"
-                        android:src="@drawable/ex"
                         android:adjustViewBounds="true"
-                        android:scaleType="fitXY"/>
+                        android:scaleType="fitXY"
+                        android:src="@drawable/night" />
 
                     <ImageView
                         android:id="@+id/backimg3"
@@ -188,9 +197,9 @@
                         android:layout_rowWeight="1"
                         android:layout_columnWeight="1"
                         android:layout_margin="5dp"
-                        android:src="@drawable/field"
                         android:adjustViewBounds="true"
-                        android:scaleType="fitXY"/>
+                        android:scaleType="fitXY"
+                        android:src="@drawable/forest" />
 
                     <ImageView
                         android:id="@+id/backimg4"
@@ -199,9 +208,9 @@
                         android:layout_rowWeight="1"
                         android:layout_columnWeight="1"
                         android:layout_margin="5dp"
-                        android:src="@drawable/ex"
                         android:adjustViewBounds="true"
-                        android:scaleType="fitXY"/>
+                        android:scaleType="fitXY"
+                        android:src="@drawable/whitesea" />
 
                     <ImageView
                         android:id="@+id/backimg5"
@@ -210,9 +219,9 @@
                         android:layout_rowWeight="1"
                         android:layout_columnWeight="1"
                         android:layout_margin="5dp"
-                        android:src="@drawable/field"
                         android:adjustViewBounds="true"
-                        android:scaleType="fitXY"/>
+                        android:scaleType="fitXY"
+                        android:src="@drawable/sunocean" />
 
                     <ImageView
                         android:id="@+id/backimg6"
@@ -221,9 +230,9 @@
                         android:layout_rowWeight="1"
                         android:layout_columnWeight="1"
                         android:layout_margin="5dp"
-                        android:src="@drawable/ex"
                         android:adjustViewBounds="true"
-                        android:scaleType="fitXY"/>
+                        android:scaleType="fitXY"
+                        android:src="@drawable/nightstar" />
 
                 </GridLayout>
 

@@ -1,4 +1,5 @@
 package com.ykky.greenapp
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -180,6 +181,7 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
             adapter.startListening()
             adapter.notifyDataSetChanged()
 
+            addBtn.setColorFilter(Color.parseColor("#ffffee"))
             addBtn.setOnClickListener {
 
                 val bundle = Bundle()

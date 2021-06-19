@@ -85,7 +85,7 @@
         android:clickable="true"
         android:src="@drawable/ic_baseline_add_circle_outline_24"
         android:tint="@null"
-        app:backgroundTint="#3F51B5"
+        app:backgroundTint="#cb9b8c"
         app:maxImageSize="55dp" />
 
 </FrameLayout>

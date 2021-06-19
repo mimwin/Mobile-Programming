@@ -12,4 +12,9 @@
     <color name="navrank">#FFB038</color>
     <color name="navsetting">#23346C</color>
     <color name="gray">#A3A1A8</color>
+    <color name="sandybrown">#EC8E69</color>
+    <color name="primary1">#ffccbc</color>
+    <color name="primary2">#ffffee</color>
+    <color name="primary3">#cb9b8c</color>
+    <color name="second1">#fff8e1</color>
 </resources>

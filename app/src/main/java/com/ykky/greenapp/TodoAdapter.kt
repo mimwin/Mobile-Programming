@@ -52,11 +52,11 @@ class TodoAdapter(val options: FirebaseRecyclerOptions<TodoData>)
 
         if(model.isChecked) {
             holder.binding.checkBtn.isSelected=true
-            holder.binding.row.setBackgroundColor(Color.parseColor("#75EFFF"))
+            holder.binding.row.setBackgroundColor(Color.parseColor("#ffccbc"))
         }
         else{
             holder.binding.checkBtn.isSelected=false
-            holder.binding.row.setBackgroundColor(Color.parseColor("#FFFFFFFF"))
+            holder.binding.row.setBackgroundColor(Color.parseColor("#ffffee"))
         }
         holder.binding.todo.text=model.todo.toString()
 

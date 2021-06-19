@@ -1,5 +1,6 @@
 package com.ykky.greenapp
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ class TodoCalendarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding!!.apply{
+            calendarView.setBackgroundColor(Color.parseColor("#ffffee"))
             calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
                 tyear=year
                 tmonth=month+1 //1월이 0

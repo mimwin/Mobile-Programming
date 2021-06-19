@@ -41,7 +41,7 @@ class TodoAddFragment : Fragment() {
         memo = view.findViewById(R.id.memo)
 
         date = requireArguments().getString("date").toString()
-
+        (activity as MainActivity).nav.visibility=View.GONE
         init()
         return view
     }
@@ -80,6 +80,7 @@ class TodoAddFragment : Fragment() {
 
                 clearInput()
                 //todoFragment로 돌아가기
+                (activity as MainActivity).nav.visibility=View.VISIBLE
                 (activity as MainActivity).replaceFragment(TODOFragment(token[0].toInt(),token[1].toInt(),token[2].toInt()),"navtodo")
             }
         }
@@ -88,6 +89,7 @@ class TodoAddFragment : Fragment() {
             Toast.makeText(context,"추가 취소",Toast.LENGTH_SHORT).show()
             var token = date.split('-')
             clearInput()
+            (activity as MainActivity).nav.visibility=View.VISIBLE
             (activity as MainActivity).replaceFragment(TODOFragment(token[0].toInt(),token[1].toInt(),token[2].toInt()),"navtodo")
         }
     }

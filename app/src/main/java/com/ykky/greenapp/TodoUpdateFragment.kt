@@ -41,7 +41,7 @@ class TodoUpdateFragment : Fragment() {
         finBtn = view.findViewById(R.id.finishBtn)
         todoText = view.findViewById(R.id.todoEditText)
         memoText = view.findViewById(R.id.memo)
-
+        (activity as MainActivity).nav.visibility=View.GONE
         init()
         return view
     }
@@ -75,6 +75,7 @@ class TodoUpdateFragment : Fragment() {
                 var token1 = date1.split('-')
 
                 clearInput()
+                (activity as MainActivity).nav.visibility=View.VISIBLE
                 (activity as MainActivity).replaceFragment(TODOFragment(token1[0].toInt(),token1[1].toInt(),token1[2].toInt()),"nav")
             }
         }

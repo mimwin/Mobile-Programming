@@ -43,49 +43,64 @@ class RegisterActivity : AppCompatActivity() {
                 val nickname = nickname.text.toString()
                 val repw = etPwdAgain.text.toString()
 
-                //비밀번호 == 비밀번호확인 인 경우
-                if(pw == repw){
-
-                    //파이어베이스 인증 시작
-                    firebaseauth.createUserWithEmailAndPassword(email,pw).addOnCompleteListener {
-                        task->
-                        if(task.isSuccessful){
-                            val getTime : String = getdate()
-                            val firebaseUser : FirebaseUser? = firebaseauth.currentUser
-
-                            // email, pw, registerdate, nickname
-                            useraccount = UserAccount(firebaseUser?.email.toString(),pw,getTime,firebaseUser?.uid.toString(),nickname,ArrayList<TodoData>(),0.0,0.0)
-
-                            //setvalue = insert
-                            databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).setValue(useraccount)
-                            databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).child("isDrawable").setValue(true)
-                            databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).child("Image").setValue(0)
-
-                            val userleader = LeaderboardData(0.0,useraccount)
-
-                            databaseref.child("Leaderboard").get().addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    val doc = it.result!!
-                                    databaseref.child("Leaderboard").child(firebaseUser?.uid.toString()).setValue(userleader)
-                                }
-                            }
-                            Toast.makeText(this@RegisterActivity,"회원가입 성공",Toast.LENGTH_SHORT).show()
-
-                            finish()
-
-                        }
-                        else{
-                            Log.e("ERROR", task.exception?.message.toString())
-                            Toast.makeText(this@RegisterActivity,task.exception?.message.toString(),Toast.LENGTH_SHORT).show()
-                            todo.clear()
-                        }
-                    }
+                if(email.isBlank()){
+                    Toast.makeText(this@RegisterActivity,"이메일을 입력하세요",Toast.LENGTH_SHORT).show()
+                }
+                else if(pw.isBlank()||repw.isBlank()){
+                    Toast.makeText(this@RegisterActivity,"비밀번호를 입력하세요",Toast.LENGTH_SHORT).show()
+                }
+                else if(nickname.isBlank()){
+                    Toast.makeText(this@RegisterActivity,"닉네임을 입력하세요",Toast.LENGTH_SHORT).show()
                 }
                 else{
-                    // 비밀번호 != 비밀번호확인 인 경우
-                    Toast.makeText(this@RegisterActivity,"비밀번호가 같지 않습니다.",Toast.LENGTH_SHORT).show()
+                    //비밀번호 == 비밀번호확인 인 경우
+                    if(pw == repw){
+
+                        //파이어베이스 인증 시작
+                        firebaseauth.createUserWithEmailAndPassword(email,pw).addOnCompleteListener {
+                                task->
+                            if(task.isSuccessful){
+                                val getTime : String = getdate()
+                                val firebaseUser : FirebaseUser? = firebaseauth.currentUser
+
+                                // email, pw, registerdate, nickname
+                                useraccount = UserAccount(firebaseUser?.email.toString(),pw,getTime,firebaseUser?.uid.toString(),nickname,ArrayList<TodoData>(),0.0,0.0)
+
+                                //setvalue = insert
+                                databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).setValue(useraccount)
+
+                                val userleader = LeaderboardData(0.0,useraccount)
+
+                                databaseref.child("Leaderboard").get().addOnCompleteListener {
+                                    if (it.isSuccessful) {
+                                        val doc = it.result!!
+                                        databaseref.child("Leaderboard").child(firebaseUser?.uid.toString()).setValue(userleader)
+                                    }
+                                }
+
+
+                                Toast.makeText(this@RegisterActivity,"회원가입 성공",Toast.LENGTH_SHORT).show()
+
+                                finish()
+
+                            }
+                            else{
+                                Log.e("ERROR", task.exception?.message.toString())
+                                Toast.makeText(this@RegisterActivity,task.exception?.message.toString(),Toast.LENGTH_SHORT).show()
+                                todo.clear()
+                            }
+                        }
+                    }
+                    else{
+                        // 비밀번호 != 비밀번호확인 인 경우
+                        Toast.makeText(this@RegisterActivity,"비밀번호가 같지 않습니다.",Toast.LENGTH_SHORT).show()
+
+                        //데이터베이스에서 중복 확인하여 중복되면 중복 toast 띄우기 ( 회원가입 실패 이유 )
+
+                    }
                 }
             }
+
         }
     }
 

@@ -68,6 +68,8 @@ class RegisterActivity : AppCompatActivity() {
 
                                 //setvalue = insert
                                 databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).setValue(useraccount)
+                                databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).child("isDrawable").setValue(true)
+                                databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).child("Image").setValue(0)
 
                                 val userleader = LeaderboardData(0.0,useraccount)
 

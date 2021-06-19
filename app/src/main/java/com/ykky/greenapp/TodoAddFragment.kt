@@ -11,8 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import kotlin.math.round
 
 class TodoAddFragment : Fragment() {
@@ -28,6 +27,7 @@ class TodoAddFragment : Fragment() {
     lateinit var date : String
     var count = 0L
     var trueflag = false
+    var flag: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,42 +47,72 @@ class TodoAddFragment : Fragment() {
     }
 
     private fun init() {
+        val context = context
+
         firebaseauth = FirebaseAuth.getInstance()
         databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")
         firebaseUser = firebaseauth.currentUser!!
 
-        //val date = "2021-06-09"
 
         finish.setOnClickListener {
 
             val todotext = todoEditText.text.toString()
             val memo = memo.text.toString()
 
-            if(todotext==""){
-                Toast.makeText(context, "Todo를 입력하세요", Toast.LENGTH_SHORT).show()
-            }else{
-                todoData = TodoData(date,todotext,memo,false)
+            val datalistener : ValueEventListener = object  : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (item in snapshot.children) {
+                        Log.e("todo2", todotext)
+                        Log.e("todo1", item.child("todo").value.toString())
+                        if (item.child("todo").value == todotext) {
+                            flag = 1
+                            break
+                        }
+                    }
 
-                // 투두 추가
-                databaseref.child("UserAccount")
-                        .child(firebaseUser.uid.toString())
-                        .child("todo")
-                        .child(todoData.todo)
-                        .setValue(todoData)
+                    if(flag==1){
+                        Toast.makeText(context, "이미 존재하는 Todo입니다", Toast.LENGTH_SHORT).show()
+                        clearInput()
+                    }else if(todotext==""){
+                        Toast.makeText(context, "Todo를 입력하세요", Toast.LENGTH_SHORT).show()
+                    } else{
+
+                        todoData = TodoData(date,todotext,memo,false)
+
+                        // 투두 추가
+                        databaseref.child("UserAccount")
+                                .child(firebaseUser.uid.toString())
+                                .child("todo")
+                                .child(todoData.todo)
+                                .setValue(todoData)
 
 
-                // 개수 증가 (전체)
-                IncreaseCount(true)
+                        // 개수 증가 (전체)
+                        IncreaseCount(true)
 
-                Toast.makeText(context, "추가 완료", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "추가 완료", Toast.LENGTH_SHORT).show()
 
-                var token = date.split('-')
+                        var token = date.split('-')
 
-                clearInput()
-                //todoFragment로 돌아가기
-                (activity as MainActivity).nav.visibility=View.VISIBLE
-                (activity as MainActivity).replaceFragment(TODOFragment(token[0].toInt(),token[1].toInt(),token[2].toInt()),"navtodo")
+                        clearInput()
+                        //todoFragment로 돌아가기
+                        (activity as MainActivity).nav.visibility=View.VISIBLE
+                        (activity as MainActivity).replaceFragment(TODOFragment(token[0].toInt(),token[1].toInt(),token[2].toInt()),"navtodo")
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                }
             }
+
+            val query = databaseref.child("UserAccount")
+                    .child(firebaseUser.uid.toString())
+                    .child("todo")
+
+            query.addListenerForSingleValueEvent(datalistener)
+            Log.e("flag", flag.toInt().toString())
+
+
         }
 
         cancel.setOnClickListener {
@@ -139,5 +169,6 @@ class TodoAddFragment : Fragment() {
             todoEditText.text.clear()
             memo.text.clear()
         }
+        flag = 0
     }
 }

@@ -76,7 +76,7 @@
                     android:layout_marginRight="40dp"
                     android:layout_weight="0"
                     android:text="취소"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -86,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
                     android:text="완료"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
             </LinearLayout>

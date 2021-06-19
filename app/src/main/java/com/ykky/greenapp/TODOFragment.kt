@@ -263,7 +263,6 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                 } else if(date==today){
                     todayrate.text= "오늘의 달성률 : ${rateInt.toString()}"
                 }
-                //todayrate.text= "오늘의 달성률 : ${rateInt.toString()}"
 
                 Log.e("LISTENER - INSIDE","${count.toString()} $truecount  $rate")
                 if(rate==100.0&&date==today){

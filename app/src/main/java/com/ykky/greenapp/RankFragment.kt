@@ -112,7 +112,7 @@ class RankFragment : Fragment() {
 
                     val cnt = snapshot.childrenCount
                     if(cnt<5){
-                        c = (5-cnt+1).toInt()
+                        c = (5-cnt).toInt()
                     }
                     for (item in snapshot.children) {
 

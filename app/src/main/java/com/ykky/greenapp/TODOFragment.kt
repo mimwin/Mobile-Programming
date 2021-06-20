@@ -73,6 +73,7 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
         val ndate = now.format(DateTimeFormatter.ofPattern("dd"))
 
 
+        Log.i("datedate",tyear.toString()+tmonth.toString()+tday.toString())
         if(tyear==0){
             year.text = yearnow.toString()
             date.text = datenow.toString()
@@ -120,7 +121,7 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                             ?.replace(R.id.fragment, Updatefragment)
                             ?.addToBackStack(null)
                             ?.commit()*/
-                    (activity as MainActivity).replaceFragment(Updatefragment,"todoadd")
+                    (activity as MainActivity).replaceFragment(Updatefragment,"todoplus")
                 }
 
                 override fun onCheckClick(holder:TodoAdapter.ViewHolder, view: View, position: Int) {
@@ -194,7 +195,7 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                 bundle.putString("date", ndate)
 
                 Addfragment.arguments = bundle
-                (activity as MainActivity).replaceFragment(Addfragment,"todoadd")
+                (activity as MainActivity).replaceFragment(Addfragment,"todoplus")
             }
 
 
@@ -221,7 +222,7 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
             todobackimg.alpha = 0.7f
 
             calendarBtn.setOnClickListener {
-                (activity as MainActivity).replaceFragment(TodoCalendarFragment(),"todocal")
+                (activity as MainActivity).replaceFragment(TodoCalendarFragment(),"todoplus")
             }
         }
         // Fragment 클래스에서 사용 시

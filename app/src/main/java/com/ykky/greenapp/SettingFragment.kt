@@ -2,11 +2,17 @@ package com.ykky.greenapp
 
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
+import android.content.ContentUris
+import android.content.Context
 import android.content.Intent
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
+import android.os.Environment
+import android.provider.DocumentsContract
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +28,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.ykky.greenapp.databinding.FragmentSettingBinding
 import com.ykky.greenapp.databinding.MypageditBinding
-import java.io.File
+import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
 
@@ -87,7 +93,7 @@ class SettingFragment : Fragment() {
             }
             mypagelogout.setOnClickListener {
                 //로그인 화면으로 돌아가기
-                val intent= Intent(requireActivity(),LoginActivity::class.java)
+                val intent= Intent(requireActivity(), LoginActivity::class.java)
                 startActivity(intent)
                 requireActivity().finish()
             }
@@ -155,40 +161,21 @@ class SettingFragment : Fragment() {
         binding!!.apply{
             //imagview clicklistener
             backimg1.setOnClickListener {
-                (activity as MainActivity).setBackImg(0)
+//                (activity as MainActivity).setBackImg(0)
                 databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(true)
                 databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(0)
                 (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
             backimg2.setOnClickListener {
-                (activity as MainActivity).setBackImg(1)
+//                (activity as MainActivity).setBackImg(1)
                 databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(true)
                 databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(1)
                 (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
             backimg3.setOnClickListener {
-                (activity as MainActivity).setBackImg(2)
+//                (activity as MainActivity).setBackImg(2)
                 databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(true)
                 databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(2)
-                (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
-            }
-            backimg4.setOnClickListener {
-                (activity as MainActivity).setBackImg(3)
-                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(true)
-                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(3)
-
-                (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
-            }
-            backimg5.setOnClickListener {
-                (activity as MainActivity).setBackImg(4)
-                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(true)
-                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(4)
-                (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
-            }
-            backimg6.setOnClickListener {
-                (activity as MainActivity).setBackImg(5)
-                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(true)
-                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(5)
                 (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
 
@@ -235,16 +222,26 @@ class SettingFragment : Fragment() {
     }
     lateinit var uri : Uri
 
+    fun BitmapToString(bitmap: Bitmap): String? {
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 70, baos)
+        val bytes: ByteArray = baos.toByteArray()
+        return Base64.encodeToString(bytes, Base64.DEFAULT)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 100) {
             if (resultCode == RESULT_OK) {
                 try {
                     uri = data?.data!!
                     val `in`: InputStream = activity?.contentResolver?.openInputStream(uri)!!
-//                    val img = BitmapFactory.decodeStream(`in`)
+                    val img = BitmapFactory.decodeStream(`in`)
+//                    val s = BitmapToString(img)!!
+//                    (activity as MainActivity).setBackImg(s)
+
 //                    `in`.close()
                     databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(false)
-                    val path = absolutelyPath(uri)
+                    val path = getPathFromUri(requireContext(), uri)
                     Log.e("Settingpath", path)
                     databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(path)
                     (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
@@ -255,31 +252,71 @@ class SettingFragment : Fragment() {
             }
         }
     }
-    fun getRealPathFromURI(contentUri: Uri): String {
 
+    fun getPathFromUri(context: Context, uri: Uri): String {
+        if (DocumentsContract.isDocumentUri(context, uri)) {
+            when (uri.authority) {
+                "com.android.externalstorage.documents" -> {
+                    val documentId: String = DocumentsContract.getDocumentId(uri)
+                    val documentIdSplited: List<String> =
+                            documentId.split(":") // left is storage identifier, right is path
+                    if (documentIdSplited[0].toLowerCase() == "primary") {
+                        return "${Environment.getExternalStorageDirectory()}/${documentIdSplited[1]}"
+                    }
+                }
 
-        val proj = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor: Cursor = activity?.contentResolver?.query(contentUri, proj, null, null, null)!!
-        cursor.moveToNext()
+                "com.android.providers.downloads.documents" -> {
+                    val documentId: String = DocumentsContract.getDocumentId(uri)
 
-        val path: String = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA))
-        val uri = Uri.fromFile(File(path))
-        cursor.close()
+                    // This is RAW Path
+                    if (documentId.startsWith("raw:")) {
+                        return documentId.replaceFirst("raw:", "")
+                    }
 
-        return path
+                    // OR else?
+                    val documentLongId: Long = try {
+                        java.lang.Long.valueOf(documentId)
+                    } catch (e: NumberFormatException) {
+                        return "ERROR"
+                    }
+                    val contentUri: Uri = ContentUris.withAppendedId(
+                            Uri.parse("content://downloads/public_downloads"),
+                            documentLongId,
+                    )
+                    return accessContentProviderDb(context, contentUri, null, null)
+                            ?: "ERROR"
+                }
+            }
+        }
+        return ""
     }
 
-    // 절대경로 변환
-    fun absolutelyPath(path: Uri): String {
-        Log.e("Settingpath", "firsthi")
-        var proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
-        var c: Cursor = activity?.contentResolver?.query(path, proj, null, null, null)!!
-        var index = c.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-        Log.e("Settingpath", index.toString())
-        c.moveToFirst()
-        var result = c.getString(index)
-        Log.e("Settingpath", result)
-        return result
+    fun accessContentProviderDb(
+            context: Context,
+            queryUri: Uri,
+            selectionQuery: String?,
+            querySelectionArgs: Array<String>?
+    ): String? {
+        // The query column:[android.providers.Downloads.impl._DATA] --> Owner Can Read + Containing file name
+        // https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/provider/Downloads.java
+        // "Absolute filesystem path to the media item on disk."
+        val queryFindColumn: String = "_data"
+        val projectionList: Array<String> = arrayOf(queryFindColumn)
+        var queryCursor: Cursor = context.contentResolver.query(
+                queryUri, projectionList, selectionQuery, querySelectionArgs, null
+        ) ?: run {
+            Log.e("FLOWER", "Query Result[Cursor] is responded with null!")
+            return null
+        }
+
+        // Set table cursor to first[Since URI Query - exact search result should be first though]
+        return if (!queryCursor.moveToFirst()) {
+            Log.e("FLOWER", "Cannot move table cursor to first row!")
+            null
+        } else {
+            val tableIndex: Int = queryCursor.getColumnIndex(queryFindColumn)
+            queryCursor.getString(tableIndex)
+        }
     }
 }
 

@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter
 
 class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
 
-    var backimgArray=arrayOf(R.drawable.ocean, R.drawable.night, R.drawable.forest, R.drawable.whitesea, R.drawable.sunocean, R.drawable.nightstar)
+    var backimgArray=arrayOf(R.drawable.ocean, R.drawable.nightstar, R.drawable.ex)
     lateinit var firebaseauth : FirebaseAuth    // 파이어베이스 인증객체
     lateinit var databaseref : DatabaseReference    // 실시간 데이터베이스
     lateinit var adapter: TodoAdapter
@@ -197,12 +197,6 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                 (activity as MainActivity).replaceFragment(Addfragment,"todoadd")
             }
 
-//            backimg = (activity as MainActivity).getBackImg()
-//            if(backimg==-1){
-//                val bitmap = (activity as MainActivity).backBitmap
-//                todobackimg.setImageBitmap(bitmap)
-//            }
-//            else todobackimg.setBackgroundResource(backimg)
 
             databaseref.child("UserAccount")
                     .child(firebaseUser.uid.toString()).get().addOnSuccessListener {
@@ -216,10 +210,9 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                         }
                         else{
                             val path = it.child("Image").value.toString()
-                            Log.e("path",path.toString())
-                            val imgFile = File("content://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2Felmo.jpeg")
+                            val imgFile = File(path)
                             if (imgFile.exists()) {
-                                val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+                                val myBitmap = BitmapFactory.decodeFile(path)
                                 todobackimg.setImageBitmap(myBitmap)
                             }
                         }

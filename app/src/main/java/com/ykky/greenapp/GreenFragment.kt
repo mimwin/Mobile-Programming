@@ -1,5 +1,7 @@
 package com.ykky.greenapp
 
+import android.content.ContentValues.TAG
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -25,7 +29,7 @@ class GreenFragment() : Fragment() {
     lateinit var firebaseUser: FirebaseUser
 
     var binding:FragmentGreenBinding?=null
-    var backimgArray=arrayOf(R.drawable.ocean, R.drawable.night, R.drawable.forest, R.drawable.whitesea, R.drawable.sunocean, R.drawable.nightstar)
+    var backimgArray=arrayOf(R.drawable.ocean, R.drawable.nightstar, R.drawable.ex)
     val flowerArray= mutableListOf<Int>(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     val flowers=arrayOf(R.id.flower1, R.id.flower2, R.id.flower3, R.id.flower4, R.id.flower5,
             R.id.flower6, R.id.flower7, R.id.flower8, R.id.flower9, R.id.flower10,
@@ -35,7 +39,6 @@ class GreenFragment() : Fragment() {
             R.id.flower26, R.id.flower27, R.id.flower28, R.id.flower29, R.id.flower30)
     var isComplete=false
     var flowersum=0
-
 
 
     override fun onCreateView(
@@ -53,7 +56,34 @@ class GreenFragment() : Fragment() {
 
     }
 
+    private fun setupPermissions() {
+        //스토리지 읽기 퍼미션을 permission 변수에 담는다
+        val permission = ContextCompat.checkSelfPermission(requireContext(),
+                android.Manifest.permission.READ_EXTERNAL_STORAGE)
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            Log.i(TAG, "Permission to record denied")
+            val s = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            requestPermissions(s, 100);
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when(requestCode){
+            100 ->{
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    //권한 거부
+                }else{
+                    Toast.makeText(context,"권한 승인 완료",Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+        }
+    }
+
     private fun init() {
+
+        setupPermissions()
 
         firebaseauth = FirebaseAuth.getInstance()
         databaseref = FirebaseDatabase.getInstance().getReference("myAppExample")
@@ -77,10 +107,9 @@ class GreenFragment() : Fragment() {
                 }
                 else{
                     val path = it.child("Image").value.toString()
-                    Log.e("path",path.toString())
-                    val imgFile = File("content://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2Felmo.jpeg")
+                    val imgFile = File(path)
                     if (imgFile.exists()) {
-                        val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+                        val myBitmap = BitmapFactory.decodeFile(path)
                         backimg.setImageBitmap(myBitmap)
                     }
                 }

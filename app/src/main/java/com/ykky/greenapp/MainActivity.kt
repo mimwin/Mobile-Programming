@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding : ActivityMainBinding
     lateinit var nav:BottomNavigationView
 
-    var backimgindex=0
+    var backbitmap : String = ""
     var isCompleted=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,13 +21,14 @@ class MainActivity : AppCompatActivity() {
         init()
     }
 
-//    fun getBackImg():Int{
-//        else return backimgArray[backimgindex]
-//    }
-
-    fun setBackImg(i:Int){
-        backimgindex=i
+    fun getBackImg():String{
+        return backbitmap
     }
+
+    fun setBackImg(s:String){
+        backbitmap=s
+    }
+
 
     fun setComplete(t:Boolean){
         isCompleted=t

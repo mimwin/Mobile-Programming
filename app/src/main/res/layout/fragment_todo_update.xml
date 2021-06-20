@@ -76,7 +76,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="0"
                     android:text="확인"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
             </LinearLayout>

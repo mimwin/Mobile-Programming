@@ -76,7 +76,7 @@ class TodoUpdateFragment : Fragment() {
 
                 clearInput()
                 (activity as MainActivity).nav.visibility=View.VISIBLE
-                (activity as MainActivity).replaceFragment(TODOFragment(token1[0].toInt(),token1[1].toInt(),token1[2].toInt()),"nav")
+                (activity as MainActivity).replaceFragment(TODOFragment(token1[0].toInt(),token1[1].toInt(),token1[2].toInt()),"navtodo")
             }
         }
     }

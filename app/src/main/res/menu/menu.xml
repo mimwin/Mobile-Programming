@@ -3,7 +3,7 @@
     <item
         android:id="@+id/navgreen"
         android:icon="@drawable/navflower"
-        android:title="꽃" />
+        android:title="Flower" />
 
     <item
         android:id="@+id/navtodo"

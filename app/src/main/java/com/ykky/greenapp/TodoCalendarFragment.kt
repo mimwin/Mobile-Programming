@@ -2,6 +2,7 @@ package com.ykky.greenapp
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,13 +28,15 @@ class TodoCalendarFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as MainActivity).nav.visibility=View.GONE
         binding!!.apply{
             calendarView.setBackgroundColor(Color.parseColor("#ffffee"))
             calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
                 tyear=year
                 tmonth=month+1 //1월이 0
                 tdayOfMonth=dayOfMonth
-
+                (activity as MainActivity).nav.visibility=View.VISIBLE
+                Log.i("calendar",tyear.toString()+tmonth.toString()+tdayOfMonth.toString())
                 (activity as MainActivity).replaceFragment(TODOFragment(tyear,tmonth,tdayOfMonth),"navtodo")
             }
         }

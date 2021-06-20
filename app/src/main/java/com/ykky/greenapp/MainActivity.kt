@@ -1,8 +1,10 @@
 package com.ykky.greenapp
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ykky.greenapp.databinding.ActivityMainBinding
 
@@ -68,12 +70,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if(supportFragmentManager.findFragmentByTag("todoplus")!=null){
+            supportFragmentManager.popBackStack("todoplus", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            nav.visibility= View.VISIBLE
+        }
+        else {
+            super.onBackPressed()
+        }
+    }
+
     fun replaceFragment(fragment: Fragment, tag:String){
-        if(supportFragmentManager.findFragmentByTag(tag)!=null){ //똑같은 화면 반복 출력일 경우
+        if(supportFragmentManager.findFragmentByTag("todoplus")!=null) {
+            supportFragmentManager.popBackStackImmediate("todoplus", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        }
+        else if(supportFragmentManager.findFragmentByTag(tag)!=null){ //똑같은 화면 반복 출력일 경우
             return
         }
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment, fragment,tag)
+        fragmentTransaction.replace(R.id.fragment,fragment,tag)
+        if(tag=="todoplus"){
+            fragmentTransaction.addToBackStack("todoplus")
+        }
         fragmentTransaction.commit()
     }
 

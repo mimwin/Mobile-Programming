@@ -69,7 +69,8 @@ class SettingFragment : Fragment() {
 
         firebaseUser = firebaseauth.currentUser!!
 
-        databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).get().addOnSuccessListener {
+        databaseref.child("UserAccount").child(firebaseUser?.uid.toString())
+            .get().addOnSuccessListener {
                 emailId=it.child("emailId").value.toString()
                 password=it.child("password").value.toString()
                 nickname=it.child("nickname").value.toString()
@@ -117,8 +118,10 @@ class SettingFragment : Fragment() {
                 val newnickname=dlgBinding.editnickaname.text.toString()
                 data[2]=newnickname
                 //데이터베이스에 저장
-                databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).child("password").setValue(newpassword)
-                databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).child("nickname").setValue(newnickname)
+                databaseref.child("UserAccount").child(firebaseUser?.uid.toString())
+                    .child("password").setValue(newpassword)
+                databaseref.child("UserAccount").child(firebaseUser?.uid.toString())
+                    .child("nickname").setValue(newnickname)
 
                 Toast.makeText(requireContext(), "마이 페이지 수정 완료", Toast.LENGTH_SHORT).show()
 
@@ -142,6 +145,7 @@ class SettingFragment : Fragment() {
             .setPositiveButton("네"){ _, _ ->
                 //데이터베이스에서 삭제하기
                 databaseref.child("UserAccount").child(firebaseUser?.uid.toString()).removeValue()
+                databaseref.child("Leaderboard").child(firebaseUser?.uid.toString()).removeValue()
                 firebaseUser.delete()
 
                 Toast.makeText(requireContext(), "계정 삭제 완료", Toast.LENGTH_SHORT).show()
@@ -161,9 +165,10 @@ class SettingFragment : Fragment() {
         binding!!.apply{
             //imagview clicklistener
             backimg1.setOnClickListener {
-//                (activity as MainActivity).setBackImg(0)
-                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("isDrawable").setValue(true)
-                databaseref.child("UserAccount").child(firebaseUser.uid.toString()).child("Image").setValue(0)
+                databaseref.child("UserAccount").child(firebaseUser.uid.toString())
+                    .child("isDrawable").setValue(true)
+                databaseref.child("UserAccount").child(firebaseUser.uid.toString())
+                    .child("Image").setValue(0)
                 (activity as MainActivity).replaceFragment(GreenFragment(), "navgreen")
             }
             backimg2.setOnClickListener {

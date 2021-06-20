@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter
 
 class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
 
-    var backimgArray=arrayOf(R.drawable.ocean, R.drawable.nightstar, R.drawable.ex)
+    var backimgArray=arrayOf(R.drawable.ocean, R.drawable.circleflower, R.drawable.ex)
     lateinit var firebaseauth : FirebaseAuth    // 파이어베이스 인증객체
     lateinit var databaseref : DatabaseReference    // 실시간 데이터베이스
     lateinit var adapter: TodoAdapter

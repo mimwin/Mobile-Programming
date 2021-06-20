@@ -188,7 +188,7 @@
                         android:layout_margin="5dp"
                         android:adjustViewBounds="true"
                         android:scaleType="fitXY"
-                        android:src="@drawable/nightstar" />
+                        android:src="@drawable/circleflower" />
 
                     <ImageView
                         android:id="@+id/backimg3"

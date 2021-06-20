@@ -30,7 +30,7 @@ class GreenFragment() : Fragment() {
 
     var binding:FragmentGreenBinding?=null
     var backimgArray=arrayOf(R.drawable.ocean, R.drawable.circleflower, R.drawable.ex)
-    val flowerArray= mutableListOf<Int>(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    val flowerArray= mutableListOf<Int>(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
     val flowers=arrayOf(R.id.flower1, R.id.flower2, R.id.flower3, R.id.flower4, R.id.flower5,
             R.id.flower6, R.id.flower7, R.id.flower8, R.id.flower9, R.id.flower10,
             R.id.flower11, R.id.flower12, R.id.flower13, R.id.flower14, R.id.flower15,

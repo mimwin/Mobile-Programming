@@ -42,8 +42,8 @@ class RankFragment : Fragment() {
 
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_rank, container, false)
@@ -184,12 +184,21 @@ class RankFragment : Fragment() {
                     mytotaltodo.text = it.child("allCount").value.toString()
                     mycompletetodo.text = it.child("trueCount").value.toString()
 
-                    val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.KOREAN)
-                    val registerdate = dateFormat.parse(it.child("registerDate").value.toString())
-                    val today = dateFormat.parse(getdate())
+                        val getToday = Calendar.getInstance()
+                        getToday.time = Date()
 
-                    myusedday.text =
-                        "${((today.time - registerdate.time) / (24 * 60 * 60 * 1000)) + 1}"
+                        val date = SimpleDateFormat("yyyy-MM-dd").parse(it.child("registerDate").value.toString())
+
+                        val cmpDate = Calendar.getInstance()
+                        cmpDate.time = date
+
+                        val diffSec: Long = (getToday.timeInMillis - cmpDate.timeInMillis) / 1000
+                        val diffDays = diffSec / (24 * 60 * 60)
+                        Log.e("registerdate", it.child("registerDate").value.toString())
+                        Log.e("registerdate - different", diffDays.toString())
+
+
+                    myusedday.text = "$diffDays"
 
                 }
         }

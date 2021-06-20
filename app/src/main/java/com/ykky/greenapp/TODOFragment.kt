@@ -259,12 +259,12 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
                 }
 
                 Log.e("LISTENER - INSIDE","${count.toString()} $truecount  $rate")
-                if(rate==100.0&&date==today){
-                    (activity as MainActivity).setComplete(true)
-                }
-                if(rate!=100.0&&date==today){
-                    (activity as MainActivity).setComplete(false)
-                }
+//                if(rate==100.0&&date==today){
+//                    (activity as MainActivity).setComplete(true)
+//                }
+//                if(rate!=100.0&&date==today){
+//                    (activity as MainActivity).setComplete(false)
+//                }
             }
             override fun onCancelled(error: DatabaseError) {
             }
@@ -351,7 +351,6 @@ class TODOFragment(y:Int, m:Int,d:Int) : Fragment() {
 
                         Log.e("INC COUNT - LEADER BOARD","$count  $truecount  $rate")
                         databaseref.child("Leaderboard").child(firebaseUser.uid.toString()).child("rate").setValue(rate)
-
                     }
                 }
     }
